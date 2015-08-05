@@ -1,0 +1,66 @@
+r.null map=0101 setnull=249,250,251,252,253,254,255
+r.null map=0109 setnull=249,250,251,252,253,254,255
+r.null map=0117 setnull=249,250,251,252,253,254,255
+r.null map=0125 setnull=249,250,251,252,253,254,255
+r.null map=0202 setnull=249,250,251,252,253,254,255
+r.null map=0210 setnull=249,250,251,252,253,254,255
+r.null map=0218 setnull=249,250,251,252,253,254,255
+r.null map=0226 setnull=249,250,251,252,253,254,255
+r.null map=0306 setnull=249,250,251,252,253,254,255
+r.null map=0314 setnull=249,250,251,252,253,254,255
+r.null map=0322 setnull=249,250,251,252,253,254,255
+r.null map=0330 setnull=249,250,251,252,253,254,255
+r.null map=0407 setnull=249,250,251,252,253,254,255
+r.null map=0415 setnull=249,250,251,252,253,254,255
+r.null map=0423 setnull=249,250,251,252,253,254,255
+r.null map=0501 setnull=249,250,251,252,253,254,255
+r.null map=0509 setnull=249,250,251,252,253,254,255
+r.null map=0517 setnull=249,250,251,252,253,254,255
+r.null map=0525 setnull=249,250,251,252,253,254,255
+r.null map=0602 setnull=249,250,251,252,253,254,255
+r.null map=0610 setnull=249,250,251,252,253,254,255
+r.null map=0618 setnull=249,250,251,252,253,254,255
+r.null map=0626 setnull=249,250,251,252,253,254,255
+r.null map=0704 setnull=249,250,251,252,253,254,255
+r.null map=0712 setnull=249,250,251,252,253,254,255
+r.null map=0720 setnull=249,250,251,252,253,254,255
+r.null map=0728 setnull=249,250,251,252,253,254,255
+r.null map=0805 setnull=249,250,251,252,253,254,255
+r.null map=0813 setnull=249,250,251,252,253,254,255
+r.null map=0821 setnull=249,250,251,252,253,254,255
+r.null map=0829 setnull=249,250,251,252,253,254,255
+r.null map=0906 setnull=249,250,251,252,253,254,255
+r.null map=0914 setnull=249,250,251,252,253,254,255
+r.null map=0922 setnull=249,250,251,252,253,254,255
+r.null map=0930 setnull=249,250,251,252,253,254,255
+r.null map=0914 setnull=249,250,251,252,253,254,255
+r.null map=1008 setnull=249,250,251,252,253,254,255
+r.null map=1016 setnull=249,250,251,252,253,254,255
+r.null map=1024 setnull=249,250,251,252,253,254,255
+r.null map=1101 setnull=249,250,251,252,253,254,255
+r.null map=1109 setnull=249,250,251,252,253,254,255
+r.null map=1117 setnull=249,250,251,252,253,254,255
+r.null map=1125 setnull=249,250,251,252,253,254,255
+
+r.series --o input=0101,0109,0117,0125,0202,0210,0218,0226,0306,0314,0322,0330,0407,0415,0423,0501,0509,0517,0525,0602,0610,0618,0626,0704,0712,0720,0728,0805,0813,0821,0829,0906,0914,0922,0930,1008,1016,1024,1101,1109,1117,1125 output=dh1,dh2,ave,std method=sum,minimum,average,stddev
+
+r.mapcalc "dh3 = std/ave"
+
+i.group group=rgb_group input=dh1,dh2,dh3
+i.group group=rgb_group -r input=dh3,dh2,dh1
+
+r.out.gdal in=rgb_group output=rgb.tif type=Float32 createopt="PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES"
+
+g.region -p
+
+g.mlist type=rast
+grass.run_command('g.mlist', type='rast', pattern='*2006')
+
+g.mremove rast=name,name,name,...
+g.mremove -f rast=*
+
+g.mremove -f rast=2006.*
+grass.run_command('g.mremove', rast='2006.*',flags='f')
+grass.run_command('g.mremove', rast='*_2006',flags='f')
+
+python ..\..\scripts\grass-process.py 2006
