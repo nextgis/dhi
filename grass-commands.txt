@@ -44,7 +44,16 @@ r.null map=1125 setnull=249,250,251,252,253,254,255
 
 r.series --o input=0101,0109,0117,0125,0202,0210,0218,0226,0306,0314,0322,0330,0407,0415,0423,0501,0509,0517,0525,0602,0610,0618,0626,0704,0712,0720,0728,0805,0813,0821,0829,0906,0914,0922,0930,1008,1016,1024,1101,1109,1117,1125 output=dh1,dh2,ave,std method=sum,minimum,average,stddev
 
+r.series --o input=2003.01.01,2003.01.17,2003.02.02,2003.02.18,2003.03.06,2003.03.22,2003.04.07,2003.04.23,2003.05.09,2003.05.25,2003.06.10,2003.06.26,2003.07.12,2003.07.28,2003.08.13,2003.08.29,2003.09.14,2003.09.30,2003.10.16,2003.11.01,2003.11.17,2003.12.03,2003.12.19 output=dh1_2003,dh2_2003,ave_2003,std_2003 method=sum,minimum,average,stddev
+
+r.series --o input=1_cnt,2_cnt,3_cnt,4_cnt,5_cnt,6_cnt,7_cnt,8_cnt,9_cnt,10_cnt,11_cnt,12_cnt,13_cnt,14_cnt,15_cnt,16_cnt,17_cnt,18_cnt,19_cnt,20_cnt,21_cnt,22_cnt,23_cnt,24_cnt,25_cnt,26_cnt,27_cnt,28_cnt,29_cnt,30_cnt,31_cnt,32_cnt,33_cnt,34_cnt,35_cnt,36_cnt,37_cnt,38_cnt,39_cnt,40_cnt,41_cnt,42_cnt,43_cnt,44_cnt,45_cnt,46_cnt output=cnt_min method=minimum range=1,12
+
+r.series --o input=1_med_f,2_med_f,3_med_f,4_med_f,5_med_f,6_med_f,7_med_f,8_med_f,9_med_f,10_med_f,11_med_f,12_med_f,13_med_f,14_med_f,15_med_f,16_med_f,17_med_f,18_med_f,19_med_f,20_med_f,21_med_f,22_med_f,23_med_f,24_med_f,25_med_f,26_med_f,27_med_f,28_med_f,29_med_f,30_med_f,31_med_f,32_med_f,33_med_f,34_med_f,35_med_f,36_med_f,37_med_f,38_med_f,39_med_f,40_med_f,41_med_f,42_med_f,43_med_f,44_med_f,45_med_f,46_med_f output=dh1_med_f,dh2_med_f,ave_med_f,std_med_f method=sum,minimum,average,stddev
+
 r.mapcalc "dh3 = std/ave"
+r.mapcalc "new = if(1_cnt>3, 1_med, null())
+
+for /L %i in (1,1,46) DO r.mapcalc "%i_med_f = if(%i_cnt>3, %i_med, null())
 
 i.group group=rgb_group input=dh1,dh2,dh3
 i.group group=rgb_group -r input=dh3,dh2,dh1
@@ -52,14 +61,25 @@ i.group group=rgb_group -r input=dh3,dh2,dh1
 r.out.gdal in=rgb_group output=rgb.tif type=Float32 createopt="PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES"
 
 g.region -p
+g.mapset location=new mapset=PERMANENT
+g.mapset location=dhi_grass mapset=PERMANENT
 
+
+g.mlist all
 g.mlist type=rast
+grass.run_command('g.mlist', type='rast')
 grass.run_command('g.mlist', type='rast', pattern='*2006')
+
+grass.run_command('g.region', flags='p')
+grass.run_command('g.region', res='0.00416')
+grass.run_command('g.region', res='0.0083333333')
 
 g.mremove rast=name,name,name,...
 g.mremove -f rast=*
 
 g.mremove -f rast=2006.*
+g.remove -f rast=std_2003
+grass.run_command('g.mremove', rast='*',flags='f')
 grass.run_command('g.mremove', rast='2006.*',flags='f')
 grass.run_command('g.mremove', rast='*_2006',flags='f')
 

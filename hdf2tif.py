@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''Prepare GeoTIFF data from MODIS HDFs for DHI calculation. To run:
-   python hdf2tiff.py year band_number output_folder
+   python hdf2tif.py input_folder output_folder
 dataset - dataset name
 input_folder - where are input HDFs
 output_folder - where to store resulting TIFs
@@ -16,13 +16,17 @@ import os
 from progressbar import *
 
 def resample(hdf,f_out_name):
-    cmd = 'gdal_translate -q ' + pref + '\"' + hdf + '\":' + dataset + ' ' + od + f_out_name
+    cmd = 'gdal_translate -q ' + pref + '\"' + hdf + '\":' + dataset.split(':')[0] + ':' + '\"' + dataset.split(':')[1] + '\"' + ' ' + od + f_out_name
+    #print(cmd)
     os.system(cmd)
 
 if __name__ == '__main__':
     dataset = sys.argv[1]   #MOD44B_250m_GRID:Percent_Tree_Cover - example
     id = sys.argv[2]
     od = sys.argv[3]
+    
+    print os.getcwd()
+    print(id)
     
     os.chdir(id)
     hdfs = glob.glob("*.hdf")

@@ -15,6 +15,7 @@ import shutil
 #prepare environment
 gisbase = os.environ['GISBASE'] = "c:/tools/NextGIS_QGIS/apps/grass/grass-6.4.4/"
 gisdbase = os.environ['GISDBASE'] = "e:/users/maxim/thematic/dhi/"
+#gisdbase = os.environ['GISDBASE'] = "x:/MOD13Q1/2003/tif-ndvi/"
 location = "dhi_grass"
 mapset   = "PERMANENT"
 

@@ -1,11 +1,10 @@
 '''Prepare GeoTIFF data from MODIS HDFs for DHI calculation. To run:
-   python download_data.py dates
+   python download_data.py 2003 92 http://e4ftl01.cr.usgs.gov/MOTA/MCD15A3.005/ x:\MCD15A3\2003\ no
 dates - dates (years or precise dates) to download, separated by comma if several
 numslices - number of slices per year
 datalink - link to data pool (i.e. http://e4ftl01.cr.usgs.gov/MOTA/MCD15A3.005/)
 wd - folder where to store downloaded files
 create_hdf_folder - if yes, hdf subfolder will be created for each date, else hdf folder will be created for the whole session
-python download_data.py 2003 92 http://e4ftl01.cr.usgs.gov/MOTA/MCD15A3.005/ x:\MCD15A3\2003\
 '''
 
 import sys
@@ -52,7 +51,7 @@ if __name__ == '__main__':
     
     for date in dates.split(','):
         date = year + '.' + date
-        os.mkdir(date)
+        if not os.path.exists(date): os.mkdir(date)
         os.chdir(date)
         if create_hdf_folder == "yes":
             if not os.path.exists('hdf'): os.mkdir("hdf")
