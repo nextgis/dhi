@@ -35,8 +35,8 @@ fn_out = prefix + '_' + year + '_' + suffix + '.tif'
 
 t = time.time()
 
-for f in glob.glob('*.tif'):
-    grass.run_command('r.in.gdal', input=f, output=f.replace('.tif',''))
+#for f in glob.glob('*.tif'):
+#    grass.run_command('r.in.gdal', input=f, output=f.replace('.tif',''))
     
 t_import = time.time() - t
 
@@ -60,6 +60,7 @@ grass.run_command('i.group', group='rgb_group_' + year, input='dh1_' + year + ',
 grass.run_command('r.out.gdal', input='rgb_group_' + year, output=fn_out, type='Float32', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES')
 shutil.move(fn_out,od + fn_out)
 shutil.move(fn_out.replace('.tif','.tfw'),od + fn_out.replace('.tif','.tfw'))
+shutil.move(fn_out + '.aux.xml',od + fn_out + '.aux.xml')
 cmd = "gdal_edit -a_srs \"EPSG:4326\" " + od + fn_out
 os.system(cmd)
 

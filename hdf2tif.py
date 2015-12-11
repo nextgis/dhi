@@ -36,6 +36,7 @@ if __name__ == '__main__':
     pbar.maxval = len(hdfs)
     
     for hdf in hdfs:
+        #f_out_name = hdf + ".tif"
         f_out_name = hdf[17:23] + ".tif"
         if not os.path.exists(od + f_out_name):
             resample(hdf,f_out_name)

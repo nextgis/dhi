@@ -44,6 +44,7 @@ if __name__ == '__main__':
     
     if calendar.isleap(int(year)): dates = dates_leap
     
+    if not os.path.exists(wd): os.mkdir(wd)
     os.chdir(wd)
     if create_hdf_folder != "yes":
         if not os.path.exists('hdf'): os.mkdir("hdf")

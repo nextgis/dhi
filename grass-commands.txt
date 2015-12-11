@@ -50,8 +50,11 @@ r.series --o input=1_cnt,2_cnt,3_cnt,4_cnt,5_cnt,6_cnt,7_cnt,8_cnt,9_cnt,10_cnt,
 
 r.series --o input=1_med_f,2_med_f,3_med_f,4_med_f,5_med_f,6_med_f,7_med_f,8_med_f,9_med_f,10_med_f,11_med_f,12_med_f,13_med_f,14_med_f,15_med_f,16_med_f,17_med_f,18_med_f,19_med_f,20_med_f,21_med_f,22_med_f,23_med_f,24_med_f,25_med_f,26_med_f,27_med_f,28_med_f,29_med_f,30_med_f,31_med_f,32_med_f,33_med_f,34_med_f,35_med_f,36_med_f,37_med_f,38_med_f,39_med_f,40_med_f,41_med_f,42_med_f,43_med_f,44_med_f,45_med_f,46_med_f output=dh1_med_f,dh2_med_f,ave_med_f,std_med_f method=sum,minimum,average,stddev
 
+r.series --o input=2003_89,2004_89,2005_89,2006_89,2007_89,2008_89,2009_89,2010_89,2011_89,2012_89,2013_89,2014_89 output=89_cnt,89_med method=count,median
+
 r.mapcalc "dh3 = std/ave"
 r.mapcalc "new = if(1_cnt>3, 1_med, null())
+r.mapcalc 89_f = if(89_cnt>3, 89_med, null())
 
 for /L %i in (1,1,46) DO r.mapcalc "%i_med_f = if(%i_cnt>3, %i_med, null())
 
