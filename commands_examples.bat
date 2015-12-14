@@ -96,9 +96,12 @@ for /L %i in (2003,1,2014) DO python gdal-qa-all.py x:\MCD15A2\%i\qa\ x:\MCD15A2
 for /L %i in (2003,1,2014) DO python gdal-qa-all.py x:\MCD15A2\%i\qa\ x:\MCD15A2\%i\tif-lai\ x:\MCD15A2\%i\tif-lai-qa\
 for /L %i in (2003,1,2014) DO python gdal-qa-all.py x:\MCD15A3\%i\qa\ x:\MCD15A3\%i\tif-lai\ x:\MCD15A3\%i\tif-lai-qa\
 for /L %i in (2003,1,2014) DO python gdal-qa-all.py x:\MOD17A2\%i\qa\ x:\MOD17A2\%i\tif-gpp\ x:\MOD17A2\%i\tif-gpp-qa\
+for /L %i in (2003,1,2014) DO python gdal-qa-all.py -iq x:\MOD17A2\%i\qa\ -ir x:\MOD17A2\%i\tif-gpp\ -o x:\MOD17A2\%i\tif-gpp-qa\ -s yes
+for /L %i in (2003,1,2014) DO python gdal-qa-all.py -iq x:\MOD15A2\%i\qa\ -ir x:\MOD15A2\%i\tif-evi\ -o x:\MOD15A2\%i\tif-evi-qa\ -s yes
 for /L %i in (2003,1,2014) DO python gdal-qa-all.py x:\MOD13A2\%i\qa\ x:\MOD13A2\%i\tif-ndvi\ x:\MOD13A2\%i\tif-ndvi-qa\
 
-for /L %i in (2003,1,2014) DO python gdal-calc-all.py 32761 w:\MOD17A2\%i\tif-gpp\ w:\MOD17A2\%i\tif-gpp\
+for /L %i in (2003,1,2014) DO python gdal-calc-all.py 32761 x:\MOD17A2\%i\tif-gpp\ x:\MOD17A2\%i\tif-gpp\
+for /L %i in (2003,1,2014) DO python gdal-calc-all.py -3000 x:\MOD13A2\%i\tif-evi\ x:\MOD13A2\%i\tif-evi\
     
 
 for %i in (2000.03.05,2001.03.06,2002.03.06,2003.03.06,2004.03.05,2005.03.06,2006.03.06,2007.03.06,2008.03.05,2009.03.06,2010.03.06,2011.03.06,2012.03.05,2013.03.06,2014.03.06) DO (
@@ -172,4 +175,4 @@ for /L %i in (2003,1,2014) DO (
 xcopy test.* combined.*
 python e:\users\maxim\Programming\python\extract_values\extract_values.py combined.shp -g -rl y:\dhi\global\lai_4\combined-v3\dhi_lai4qa_f.tif
 
-python get_unique.py mod13.txt -fs x:\MOD13A2\2003\tif-ndvi-qa\,x:\MOD13A2\2004\tif-ndvi-qa\,x:\MOD13A2\2005\tif-ndvi-qa\,x:\MOD13A2\2006\tif-ndvi-qa\,x:\MOD13A2\2007\tif-ndvi-qa\,x:\MOD13A2\2008\tif-ndvi-qa\,x:\MOD13A2\2009\tif-ndvi-qa\,x:\MOD13A2\2010\tif-ndvi-qa\,x:\MOD13A2\2011\tif-ndvi-qa\,x:\MOD13A2\2012\tif-ndvi-qa\,x:\MOD13A2\2013\tif-ndvi-qa\,x:\MOD13A2\2014\tif-ndvi-qa\
+python get_unique.py fill-values-search\MCD15A2-fpar.txt -fs x:\MCD15A2\2003\tif-fpar-qa\,x:\MCD15A2\2004\tif-fpar-qa\,x:\MCD15A2\2005\tif-fpar-qa\,x:\MCD15A2\2006\tif-fpar-qa\,x:\MCD15A2\2007\tif-fpar-qa\,x:\MCD15A2\2008\tif-fpar-qa\,x:\MCD15A2\2009\tif-fpar-qa\,x:\MCD15A2\2010\tif-fpar-qa\,x:\MCD15A2\2011\tif-fpar-qa\,x:\MCD15A2\2012\tif-fpar-qa\,x:\MCD15A2\2013\tif-fpar-qa\,x:\MCD15A2\2014\tif-fpar-qa\

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''Prepare GeoTIFF data from MODIS HDFs for DHI calculation. To run:
-   python dhi_prepare2.py 2003 MOD_Grid_MOD15A2:Fpar_1km x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\before-nodata\ 0.0083 4326
+   python prepare_data.py 2003 MOD_Grid_MOD15A2:Fpar_1km x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\before-nodata\ 0.0083 4326
 year - year for which data should be processed
 band_number - order number of sds to import (starts with 1)
 input_folder - where are input HDFs (this is folder of folders)
@@ -40,7 +40,7 @@ if __name__ == '__main__':
         os.system(cmd)
         
         if not os.path.exists(date + '.vrt'):
-            cmd = 'python ' + script_path + 'gdal-merge-all.py ' + date + '.vrt no 0 '  + id + date + '\\ ' + id + date + '\\'
+            cmd = 'python ' + script_path + 'merge_all.py ' + date + '.vrt no 0 '  + id + date + '\\ ' + id + date + '\\'
             os.system(cmd)
         
         if not os.path.exists(od + date + '.tif'):

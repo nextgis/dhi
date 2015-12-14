@@ -15,7 +15,7 @@ os.chdir(id)
 
 tifs = glob.glob('*.tif')
 for tif in tifs:
-    cmd = 'gdal_calc.bat ' + type + '-A ' + tif + ' --outfile=temp.tif ' + tif + ' --calc="A*(A<' + val + ') " --NoDataValue=0'
+    cmd = 'gdal_calc.bat ' + type + '-A ' + tif + ' --outfile=temp.tif ' + tif + ' --calc="A*(A>' + val + ') " --NoDataValue=0'
     os.system(cmd)
     
     shutil.move('temp.tif',od + tif)

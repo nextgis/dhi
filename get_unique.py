@@ -1,6 +1,37 @@
-'''Prepare DHI data from stacks of TIFs. To run:
-   python get_unique.py y:\dhi\global\fpar_4\,y:\dhi\global\fpar_4\combined\ out.txt
-argument1 - list of folders separated by commas
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#******************************************************************************
+#
+# get_unique.py
+# ---------------------------------------------------------
+# Python script for extracting values of image according to
+# the point shapefile.
+# More: http://gis-lab.info/qa/dhi-scripts.html
+#
+# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+#
+# This source is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This code is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# A copy of the GNU General Public License is available on the World Wide Web
+# at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+# to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+#******************************************************************************
+
+'''Get unique values from series of rasters. To run:
+   python get_unique.py -fs y:\dhi\global\fpar_4\,y:\dhi\global\fpar_4\combined\ out.txt
+   python get_unique.py -rs y:\dhi\global\fpar_4\raster1.tif,y:\dhi\global\fpar_4\combined\raster2.tif out.txt
+argument1 - list of folders separated by commas or list of rasters
 out.txt - where to store list of unique values
 '''
 
