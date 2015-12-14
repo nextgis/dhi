@@ -1,12 +1,40 @@
-#!/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''Prepare GeoTIFF data from MODIS HDFs for DHI calculation. To run:
-   python add_colortable.py input output colortable
-input - input GeoTIFF with Gray legend to which colortable will be attached
-output - output GeoTIFF
-colortable - path to colortable
-'''
+#******************************************************************************
+#
+# add_colortable.py
+# ---------------------------------------------------------
+# Apply a colortable to turn grayscale raster to pseudocolor
+# More: http://github.com/nextgis/dhi
+#
+# Usage: 
+#      add_colortable.py input output colortable
+#      where:
+#           input       input GeoTIFF with Gray legend to which colortable will be attached
+#           output      output GeoTIFF
+#           colortable  path to colortable e:\dhi\colortables\fpar.txt
+# Example:
+#      python add_colortable.py input.tif output.tif 
+#
+# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+#
+# This source is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This code is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# A copy of the GNU General Public License is available on the World Wide Web
+# at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+# to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+#******************************************************************************
 
 import os
 import sys

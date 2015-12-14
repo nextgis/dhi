@@ -5,9 +5,19 @@
 #
 # get_unique.py
 # ---------------------------------------------------------
-# Python script for extracting values of image according to
-# the point shapefile.
-# More: http://gis-lab.info/qa/dhi-scripts.html
+# Create a list of unique values from series of rasters
+# More: http://github.com/nextgis/dhi
+#
+# Usage: 
+#      get_unique.py [-h] (-rs RASTERS | -fs FOLDERS) output
+#      where:
+#           -h                 show this help message and exit
+#           -rs                path(s) to raster, separate by comma if several
+#           -fs                path(s) to folders with raster, separate by comma if several
+#           output             text file where unique values will be stored
+# Examples:
+#      python get_unique.py -fs y:\dhi\global\fpar_4\,y:\dhi\global\fpar_4\combined\ out.txt
+#      python get_unique.py -rs y:\dhi\global\fpar_4\raster1.tif,y:\dhi\global\fpar_4\combined\raster2.tif out.txt
 #
 # Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
 #
@@ -28,13 +38,6 @@
 #
 #******************************************************************************
 
-'''Get unique values from series of rasters. To run:
-   python get_unique.py -fs y:\dhi\global\fpar_4\,y:\dhi\global\fpar_4\combined\ out.txt
-   python get_unique.py -rs y:\dhi\global\fpar_4\raster1.tif,y:\dhi\global\fpar_4\combined\raster2.tif out.txt
-argument1 - list of folders separated by commas or list of rasters
-out.txt - where to store list of unique values
-'''
-
 from osgeo import gdal
 import numpy as np
 import sys
@@ -42,7 +45,7 @@ import glob
 import argparse
 from progressbar import *
 
-parser = argparse.ArgumentParser(prog='PROG')
+parser = argparse.ArgumentParser()
 parser.add_argument('output', help='Output file')
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('-rs','--rasters', help='path(s) to raster, separate by comma if several')

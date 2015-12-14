@@ -27,36 +27,36 @@ for /L %i in (2003,1,2012) DO python lc_prepare.py %i 2 y:\source\MCD12Q1\%i.01.
 
 for /L %i in (2005,1,2014) DO python dhi_prepare.py %i 2 y:\source\MCD15A2\%i\hdf\ y:\source\MCD15A2\%i\tif-lai\
 
-for /L %i in (2005,1,2014) DO python download_data.py %i http://e4ftl01.cr.usgs.gov/MOTA/MCD15A3.005/ x:\MCD15A3\%i\
-for /L %i in (2000,1,2014) DO python download_data.py %i 46 http://e4ftl01.cr.usgs.gov/MOLT/MOD17A2.055/ x:\MOD17A2\%i\ no
-for /L %i in (2002,1,2014) DO python download_data.py %i 23 http://e4ftl01.cr.usgs.gov/MOLT/MOD13A1.006/ x:\MOD13A1\%i\ no
-for /L %i in (2000,1,2014) DO python download_data.py %i 23 http://e4ftl01.cr.usgs.gov/MOLT/MOD13A2.006/ x:\MOD13A2\%i\ no
+for /L %i in (2005,1,2014) DO python download_modis_data.py %i http://e4ftl01.cr.usgs.gov/MOTA/MCD15A3.005/ x:\MCD15A3\%i\
+for /L %i in (2000,1,2014) DO python download_modis_data.py %i 46 http://e4ftl01.cr.usgs.gov/MOLT/MOD17A2.055/ x:\MOD17A2\%i\ no
+for /L %i in (2002,1,2014) DO python download_modis_data.py %i 23 http://e4ftl01.cr.usgs.gov/MOLT/MOD13A1.006/ x:\MOD13A1\%i\ no
+for /L %i in (2000,1,2014) DO python download_modis_data.py %i 23 http://e4ftl01.cr.usgs.gov/MOLT/MOD13A2.006/ x:\MOD13A2\%i\ no
 
-for /L %i in (2009,1,2014) DO python grass-process.py %i x:\MCD15A3\%i\tif-fpar-qa\ y:\dhi\global\fpar_4\ fpar4qa
-for /L %i in (2003,1,2014) DO python grass-process.py %i x:\MCD15A3\%i\tif-lai-qa\ y:\dhi\global\lai_4\ lai4qa
-for /L %i in (2005,1,2014) DO python grass-process.py %i x:\MCD15A2\%i\tif-fpar-qa\ y:\dhi\global\fpar_8\ fpar8qa
-for /L %i in (2003,1,2014) DO python grass-process.py %i x:\MOD17A2\%i\tif-gpp-qa\ y:\dhi\global\gpp\ gppqa
+for /L %i in (2009,1,2014) DO python create_yearly_dhi.py %i x:\MCD15A3\%i\tif-fpar-qa\ y:\dhi\global\fpar_4\ fpar4qa
+for /L %i in (2003,1,2014) DO python create_yearly_dhi.py %i x:\MCD15A3\%i\tif-lai-qa\ y:\dhi\global\lai_4\ lai4qa
+for /L %i in (2005,1,2014) DO python create_yearly_dhi.py %i x:\MCD15A2\%i\tif-fpar-qa\ y:\dhi\global\fpar_8\ fpar8qa
+for /L %i in (2003,1,2014) DO python create_yearly_dhi.py %i x:\MOD17A2\%i\tif-gpp-qa\ y:\dhi\global\gpp\ gppqa
 
-python grass-process.py 2003 x:\MOD13Q1\2003\tif-ndvi\ y:\dhi\global\ndvi\ ndvi
-python grass-averages-fpar.py x:\MCD15A3\ x:\MCD15A3\combined\fpar4\ y:\dhi\global\fpar_4\combined-v3\ fpar4qa
-python grass-averages-fpar.py x:\MCD15A3\ x:\MCD15A3\combined\lai4\ y:\dhi\global\lai_4\combined-v3\ lai4qa lai
-python grass-averages-fpar.py x:\MCD17A2\ x:\MCD17A2\combined\gpp\ y:\dhi\global\gpp\combined-v3\ gppqa gpp
-python grass-averages-fpar.py x:\MOD13A2\ x:\MOD13A2\combined\gpp\ y:\dhi\global\ndvi\1000\combined-v3\ ndviqa ndvi
+python create_yearly_dhi.py 2003 x:\MOD13Q1\2003\tif-ndvi\ y:\dhi\global\ndvi\ ndvi
+python create_combined_dhi.py x:\MCD15A3\ x:\MCD15A3\combined\fpar4\ y:\dhi\global\fpar_4\combined-v3\ fpar4qa
+python create_combined_dhi.py x:\MCD15A3\ x:\MCD15A3\combined\lai4\ y:\dhi\global\lai_4\combined-v3\ lai4qa lai
+python create_combined_dhi.py x:\MCD17A2\ x:\MCD17A2\combined\gpp\ y:\dhi\global\gpp\combined-v3\ gppqa gpp
+python create_combined_dhi.py x:\MOD13A2\ x:\MOD13A2\combined\gpp\ y:\dhi\global\ndvi\1000\combined-v3\ ndviqa ndvi
 
 python extract_values.py -g e:\users\maxim\thematic\dhi\random_points\other\fpar8.shp  -d y:\dhi\global\fpar_8\ -e tif
 
-python dhi_prepare2.py 2003 MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi\ 0.002 4326
-python dhi_prepare2.py 2003 "MOD_Grid_MOD15A2:FparLai_QC" x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\qa\ 0.0083
-python dhi_prepare2.py 2003 "MODIS_Grid_16DAY_250m_500m_VI:250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi-sin\ 250 no
+python prepare_data.py 2003 MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi\ 0.002 4326
+python prepare_data.py 2003 "MOD_Grid_MOD15A2:FparLai_QC" x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\qa\ 0.0083
+python prepare_data.py 2003 "MODIS_Grid_16DAY_250m_500m_VI:250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi-sin\ 250 no
 
-for /L %i in (2003,1,2014) DO python dhi_prepare2.py %i MOD_Grid_MOD15A2:Lai_1km x:\MCD15A2\%i\hdf\ x:\MCD15A2\%i\tif-lai\ 0.0083 4326
-for /L %i in (2003,1,2014) DO python dhi_prepare2.py %i MOD_Grid_MOD15A2:FparLai_QC x:\MCD15A3\%i\hdf\ x:\MCD15A2\%i\qa\ 0.0083 4326
-for /L %i in (2000,1,2014) DO python dhi_prepare2.py %i MOD_Grid_MOD17A2:Gpp_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\tif-gpp\ 0.0083 4326
-for /L %i in (2000,1,2014) DO python dhi_prepare2.py %i MOD_Grid_MOD17A2:Psn_QC_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\qa\ 0.0083 4326
-for /L %i in (2001,1,2014) DO python dhi_prepare2.py %i "MODIS_Grid_16DAY_500m_VI:500m 16 days NDVI" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\tif-ndvi\ 0.00416 4326
-for /L %i in (2003,1,2014) DO python dhi_prepare2.py %i "MODIS_Grid_16DAY_1km_VI:1 km 16 days NDVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-ndvi\ 0.0083 4326
-for /L %i in (2003,1,2014) DO python dhi_prepare2.py %i "MODIS_Grid_16DAY_1km_VI:1 km 16 days EVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-evi\ 0.0083 4326
-for /L %i in (2003,1,2014) DO python dhi_prepare2.py %i "MODIS_Grid_16DAY_1km_VI:1 km 16 days VI Quality" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\qa\ 0.0083 4326
+for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:Lai_1km x:\MCD15A2\%i\hdf\ x:\MCD15A2\%i\tif-lai\ 0.0083 4326
+for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:FparLai_QC x:\MCD15A3\%i\hdf\ x:\MCD15A2\%i\qa\ 0.0083 4326
+for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Gpp_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\tif-gpp\ 0.0083 4326
+for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Psn_QC_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\qa\ 0.0083 4326
+for /L %i in (2001,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days NDVI" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\tif-ndvi\ 0.00416 4326
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days NDVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-ndvi\ 0.0083 4326
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days EVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-evi\ 0.0083 4326
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days VI Quality" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\qa\ 0.0083 4326
 
 
 python hdf2tif.py MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD13Q1\2003\hdf\2003.01.01\ x:\MOD13Q1\2003\tif-ndvi\\
@@ -69,17 +69,17 @@ gdal_translate HDF4_EOS:EOS_GRID:"MOD13Q1.A2003001.h00v08.005.2007266192255.hdf"
 REM extract QA data for 2003
 for %i in (2003.01.01,2003.01.09,2003.01.17,2003.01.25,2003.02.02,2003.02.10,2003.02.18,2003.02.26,2003.03.06,2003.03.14,2003.03.22,2003.03.30,2003.04.07,2003.04.15,2003.04.23,2003.05.01,2003.05.09,2003.05.17,2003.05.25,2003.06.02,2003.06.10,2003.06.18,2003.06.26,2003.07.04,2003.07.12,2003.07.20,2003.07.28,2003.08.05,2003.08.13,2003.08.21,2003.08.29,2003.09.06,2003.09.14,2003.09.22,2003.09.30,2003.10.08,2003.10.16,2003.10.24,2003.11.01,2003.11.09,2003.11.17,2003.11.25,2003.12.03,2003.12.11,2003.12.19,2003.12.27) DO (
     python hdf2tif.py MOD_Grid_MOD15A2:FparLai_QC x:\MCD15A2\2003\hdf\%i\ x:\MCD15A2\2003\hdf\%i\
-    python gdal-merge-all.py %i.vrt no 0 x:\MCD15A2\2003\hdf\%i\ x:\MCD15A2\2003\hdf\%i\
+    python merge_all.py %i.vrt no 0 x:\MCD15A2\2003\hdf\%i\ x:\MCD15A2\2003\hdf\%i\
     gdalwarp -t_srs EPSG:4326 -tr 0.0083 0.0083 x:\MCD15A2\2003\hdf\%i\%i.vrt x:\MCD15A2\2003\tif-fpar\before-nodata\qa\%i.tif
 )
 
 REM extract fire data for 2014 from MCD45A1
 for %i in (2014.01.01,2014.02.01,2014.03.01,2014.04.01,2014.05.01,2014.06.01,2014.07.01,2014.08.01,2014.09.01,2014.10.01,2014.11.01,2014.12.01) DO (
     python hdf2tif.py MOD_GRID_Monthly_500km_BA:burndate x:\MCD45A1\2014\hdf\%i\ x:\MCD45A1\2014\hdf\%i\
-    python gdal-merge-all.py %i.vrt no 0 x:\MCD45A1\2014\hdf\%i\ x:\MCD45A1\2014\hdf\%i\
+    python merge_all.py %i.vrt no 0 x:\MCD45A1\2014\hdf\%i\ x:\MCD45A1\2014\hdf\%i\
     gdalwarp -t_srs EPSG:4326 -tr 0.0046 0.0046 x:\MCD45A1\2014\hdf\%i\%i.vrt x:\MCD45A1\2014\tif\%i.tif
 )
-for /L %i in (2003,1,2014) DO python dhi_prepare2.py %i MOD_GRID_Monthly_500km_BA:burndate x:\MCD45A1\%i\hdf\ x:\MCD45A1\%i\hdf\ 0.0046 4326
+for /L %i in (2003,1,2014) DO python prepare_data.py %i MOD_GRID_Monthly_500km_BA:burndate x:\MCD45A1\%i\hdf\ x:\MCD45A1\%i\hdf\ 0.0046 4326
 
 for %i in (*.tif) DO (
     gdal_calc.bat -A %i --outfile=%~ni_b.tif --calc="A*(A<366)" --NoDataValue=0
@@ -91,26 +91,26 @@ for %i in (*.tif) DO (
     gdal_calc.bat -A %~ni_b.tif -B ..\%i --outfile=..\..\..\tif-fpar-qa\%i --calc="A*B" --NoDataValue=0
 )
 
-python gdal-qa-all.py x:\MCD15A2\2003\tif-fpar\qa\ x:\MCD15A2\2003\tif-fpar\ x:\MCD15A2\2003\tif-fpar-qa\
-for /L %i in (2003,1,2014) DO python gdal-qa-all.py x:\MCD15A2\%i\qa\ x:\MCD15A2\%i\tif-fpar\ x:\MCD15A2\%i\tif-fpar-qa\
-for /L %i in (2003,1,2014) DO python gdal-qa-all.py x:\MCD15A2\%i\qa\ x:\MCD15A2\%i\tif-lai\ x:\MCD15A2\%i\tif-lai-qa\
-for /L %i in (2003,1,2014) DO python gdal-qa-all.py x:\MCD15A3\%i\qa\ x:\MCD15A3\%i\tif-lai\ x:\MCD15A3\%i\tif-lai-qa\
-for /L %i in (2003,1,2014) DO python gdal-qa-all.py x:\MOD17A2\%i\qa\ x:\MOD17A2\%i\tif-gpp\ x:\MOD17A2\%i\tif-gpp-qa\
-for /L %i in (2003,1,2014) DO python gdal-qa-all.py -iq x:\MOD17A2\%i\qa\ -ir x:\MOD17A2\%i\tif-gpp\ -o x:\MOD17A2\%i\tif-gpp-qa\ -s yes
-for /L %i in (2003,1,2014) DO python gdal-qa-all.py -iq x:\MOD15A2\%i\qa\ -ir x:\MOD15A2\%i\tif-evi\ -o x:\MOD15A2\%i\tif-evi-qa\ -s yes
-for /L %i in (2003,1,2014) DO python gdal-qa-all.py x:\MOD13A2\%i\qa\ x:\MOD13A2\%i\tif-ndvi\ x:\MOD13A2\%i\tif-ndvi-qa\
+python qa_all.py x:\MCD15A2\2003\tif-fpar\qa\ x:\MCD15A2\2003\tif-fpar\ x:\MCD15A2\2003\tif-fpar-qa\
+for /L %i in (2003,1,2014) DO python qa_all.py x:\MCD15A2\%i\qa\ x:\MCD15A2\%i\tif-fpar\ x:\MCD15A2\%i\tif-fpar-qa\
+for /L %i in (2003,1,2014) DO python qa_all.py x:\MCD15A2\%i\qa\ x:\MCD15A2\%i\tif-lai\ x:\MCD15A2\%i\tif-lai-qa\
+for /L %i in (2003,1,2014) DO python qa_all.py x:\MCD15A3\%i\qa\ x:\MCD15A3\%i\tif-lai\ x:\MCD15A3\%i\tif-lai-qa\
+for /L %i in (2003,1,2014) DO python qa_all.py x:\MOD17A2\%i\qa\ x:\MOD17A2\%i\tif-gpp\ x:\MOD17A2\%i\tif-gpp-qa\
+for /L %i in (2003,1,2014) DO python qa_all.py -iq x:\MOD17A2\%i\qa\ -ir x:\MOD17A2\%i\tif-gpp\ -o x:\MOD17A2\%i\tif-gpp-qa\ -s yes
+for /L %i in (2003,1,2014) DO python qa_all.py -iq x:\MOD15A2\%i\qa\ -ir x:\MOD15A2\%i\tif-evi\ -o x:\MOD15A2\%i\tif-evi-qa\ -s yes
+for /L %i in (2003,1,2014) DO python qa_all.py x:\MOD13A2\%i\qa\ x:\MOD13A2\%i\tif-ndvi\ x:\MOD13A2\%i\tif-ndvi-qa\
 
-for /L %i in (2003,1,2014) DO python gdal-calc-all.py 32761 x:\MOD17A2\%i\tif-gpp\ x:\MOD17A2\%i\tif-gpp\
-for /L %i in (2003,1,2014) DO python gdal-calc-all.py -3000 x:\MOD13A2\%i\tif-evi\ x:\MOD13A2\%i\tif-evi\
+for /L %i in (2003,1,2014) DO python calc_all.py 32761 x:\MOD17A2\%i\tif-gpp\ x:\MOD17A2\%i\tif-gpp\
+for /L %i in (2003,1,2014) DO python calc_all.py -3000 x:\MOD13A2\%i\tif-evi\ x:\MOD13A2\%i\tif-evi\
     
 
 for %i in (2000.03.05,2001.03.06,2002.03.06,2003.03.06,2004.03.05,2005.03.06,2006.03.06,2007.03.06,2008.03.05,2009.03.06,2010.03.06,2011.03.06,2012.03.05,2013.03.06,2014.03.06) DO (
     python hdf2tif.py MOD44B_250m_GRID:Percent_Tree_Cover y:\source\MOD44B\%i\hdf\ y:\source\MOD44B\%i\tif_vcf1\
     python hdf2tif.py MOD44B_250m_GRID:Percent_NonTree_Vegetation y:\source\MOD44B\%i\hdf\ y:\source\MOD44B\%i\tif_vcf2\
     python hdf2tif.py MOD44B_250m_GRID:Percent_NonVegetated y:\source\MOD44B\%i\hdf\ y:\source\MOD44B\%i\tif_vcf3\
-    python gdal-merge-all.py %i.vrt no 0 y:\source\MOD44B\%i\tif_vcf1\ y:\source\MOD44B\%i\tif_vcf1\
-    python gdal-merge-all.py %i.vrt no 0 y:\source\MOD44B\%i\tif_vcf2\ y:\source\MOD44B\%i\tif_vcf2\
-    python gdal-merge-all.py %i.vrt no 0 y:\source\MOD44B\%i\tif_vcf3\ y:\source\MOD44B\%i\tif_vcf3\
+    python merge_all.py %i.vrt no 0 y:\source\MOD44B\%i\tif_vcf1\ y:\source\MOD44B\%i\tif_vcf1\
+    python merge_all.py %i.vrt no 0 y:\source\MOD44B\%i\tif_vcf2\ y:\source\MOD44B\%i\tif_vcf2\
+    python merge_all.py %i.vrt no 0 y:\source\MOD44B\%i\tif_vcf3\ y:\source\MOD44B\%i\tif_vcf3\
     gdalwarp -t_srs EPSG:4326 y:\source\MOD44B\%i\tif_vcf1\%i.vrt y:\vcf\global\vcf_%i_tree.tif
     gdalwarp -t_srs EPSG:4326 y:\source\MOD44B\%i\tif_vcf2\%i.vrt y:\vcf\global\vcf_%i_shrub.tif
     gdalwarp -t_srs EPSG:4326 y:\source\MOD44B\%i\tif_vcf3\%i.vrt y:\vcf\global\vcf_%i_bare.tif
@@ -123,11 +123,11 @@ for %i in (2003.01.01,2004.01.01,2005.01.01,2006.01.01,2007.01.01,2008.01.01,200
     python hdf2tif.py MOD12Q1:Land_Cover_Type_3 x:\MCD12Q1\%i\hdf\ x:\MCD12Q1\%i\tif-fpar\
     python hdf2tif.py MOD12Q1:Land_Cover_Type_4 x:\MCD12Q1\%i\hdf\ x:\MCD12Q1\%i\tif-npp\
     python hdf2tif.py MOD12Q1:Land_Cover_Type_5 x:\MCD12Q1\%i\hdf\ x:\MCD12Q1\%i\tif-pft\
-    python gdal-merge-all.py %i.vrt no 0 x:\MCD12Q1\%i\tif-igbp\ x:\MCD12Q1\%i\tif-igbp\
-    python gdal-merge-all.py %i.vrt no 0 x:\MCD12Q1\%i\tif-umd\ x:\MCD12Q1\%i\tif-umd\
-    python gdal-merge-all.py %i.vrt no 0 x:\MCD12Q1\%i\tif-fpar\ x:\MCD12Q1\%i\tif-fpar\
-    python gdal-merge-all.py %i.vrt no 0 x:\MCD12Q1\%i\tif-npp\ x:\MCD12Q1\%i\tif-npp\
-    python gdal-merge-all.py %i.vrt no 0 x:\MCD12Q1\%i\tif-pft\ x:\MCD12Q1\%i\tif-pft\
+    python merge_all.py %i.vrt no 0 x:\MCD12Q1\%i\tif-igbp\ x:\MCD12Q1\%i\tif-igbp\
+    python merge_all.py %i.vrt no 0 x:\MCD12Q1\%i\tif-umd\ x:\MCD12Q1\%i\tif-umd\
+    python merge_all.py %i.vrt no 0 x:\MCD12Q1\%i\tif-fpar\ x:\MCD12Q1\%i\tif-fpar\
+    python merge_all.py %i.vrt no 0 x:\MCD12Q1\%i\tif-npp\ x:\MCD12Q1\%i\tif-npp\
+    python merge_all.py %i.vrt no 0 x:\MCD12Q1\%i\tif-pft\ x:\MCD12Q1\%i\tif-pft\
     gdalwarp -t_srs EPSG:4326 x:\MCD12Q1\%i\tif-igbp\%i.vrt y:\landcover\global\igbp\new\lc_%i_igbp.tif
     gdalwarp -t_srs EPSG:4326 x:\MCD12Q1\%i\tif-umd\%i.vrt y:\landcover\global\umd\new\lc_%i_umd.tif
     gdalwarp -t_srs EPSG:4326 x:\MCD12Q1\%i\tif-fpar\%i.vrt y:\landcover\global\fpar-lai\new\lc_%i_fpar.tif
@@ -151,10 +151,10 @@ for /L %y in (2003,1,2014) DO (
     for /D %i DO (
         cd %i
         python e:\users\maxim\thematic\dhi\scripts\hdf2tif.py MOD_Grid_MOD15A2:Lai_1km x:\MCD15A2\%y\hdf\%i\ x:\MCD15A2\%y\hdf\%i\
-        python e:\users\maxim\thematic\dhi\scripts\gdal-merge-all.py %i.vrt no 0 x:\MCD15A2\%y\hdf\%i\ x:\MCD15A2\%y\hdf\%i\
+        python e:\users\maxim\thematic\dhi\scripts\merge_all.py %i.vrt no 0 x:\MCD15A2\%y\hdf\%i\ x:\MCD15A2\%y\hdf\%i\
         gdalwarp -t_srs EPSG:4326 -tr 0.0083 0.0083 x:\MCD15A2\%y\hdf\%i\%i.vrt x:\MCD15A2\%y\tif-lai\lai_%i.tif
     )
-    python e:\users\maxim\thematic\dhi\scripts\gdal-calc-all.py 249 x:\MCD15A2\%y\tif-lai\ x:\MCD15A2\%y\tif-lai\
+    python e:\users\maxim\thematic\dhi\scripts\calc_all.py 249 x:\MCD15A2\%y\tif-lai\ x:\MCD15A2\%y\tif-lai\
 )
 
 
@@ -164,7 +164,7 @@ python e:\users\maxim\Programming\python\extract_values\extract_values.py -g -f 
 
 for %i in (*.shp) DO ogr2ogr -sql "SELECT * FROM %~ni WHERE majority_l NOT IN (0,12,13,15,16,254,255) AND dhi_fpar1 != -1 ORDER BY RANDOM() LIMIT 10000" -dialect SQLITE select\%i %i
 
-python majority_landcovers.py y:\landcover\global\npp\ npp majority_landcovers.tif 9
+python landcovers_majority.py y:\landcover\global\npp\ npp majority_landcovers.tif 9
 
 python e:\users\maxim\Programming\python\extract_values\extract_values.py -g -f c:\temp\orrock\points-all.shp -rl y:\dhi\global\fpar_8\dhi_2003_fpar8.tif,y:\dhi\global\fpar_8\dhi_2004_fpar8.tif,y:\dhi\global\fpar_8\dhi_2005_fpar8.tif,y:\dhi\global\fpar_8\dhi_2006_fpar8.tif,y:\dhi\global\fpar_8\dhi_2007_fpar8.tif,y:\dhi\global\fpar_8\dhi_2008_fpar8.tif,y:\dhi\global\fpar_8\dhi_2009_fpar8.tif,y:\dhi\global\fpar_8\dhi_2010_fpar8.tif,y:\dhi\global\fpar_8\dhi_2011_fpar8.tif,y:\dhi\global\fpar_8\dhi_2012_fpar8.tif,y:\dhi\global\fpar_8\dhi_2013_fpar8.tif,y:\dhi\global\fpar_8\dhi_2014_fpar8.tif
 

@@ -1,5 +1,45 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#******************************************************************************
+#
+# create_combined_dhi.py
+# ---------------------------------------------------------
+# Create combined DHI product
+# More: http://github.com/nextgis/dhi
+#
+# Usage: 
+#      create_combined_dhi.py input_folder output_folder1 output_folder2 suffix product
+#      where:
+#           input_folder    input folder
+#           output_folder1  where to store TIFs for each time slice
+#           output_folder2  where to store the result
+#           suffix          suffix to end to resulting file name
+#           product         product code used in folder name
+# Example:
+#      python create_combined_dhi.py x:\MCD15A2\ x:\MCD15A2\combined\fpar8\ y:\dhi\global\fpar_8\combined-v2\ fpar8 fpar
+#
+# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+#
+# This source is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This code is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# A copy of the GNU General Public License is available on the World Wide Web
+# at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+# to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+#******************************************************************************
+
 '''Prepare DHI data from stacks of TIFs. To run:
-   python grass-averages-fpar.py x:\MCD15A2\ x:\MCD15A2\combined\fpar8\ y:\dhi\global\fpar_8\combined-v2\ fpar8 fpar
+   
 input_folder - where are input TIFs
 output_folder1 - where to store TIFs for each time slice
 output_folder2 - where to store resulting TIFs

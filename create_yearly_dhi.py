@@ -1,10 +1,41 @@
-'''Prepare DHI data from stacks of TIFs. To run:
-   python grass-process.py 2004 x:\MCD15A2\2003\tif-lai\after-nodata\ y:\dhi\global\lai\ lai
-year - year for which data should be processed
-input_folder - where are input TIFs
-output_folder - where to store resulting TIFs
-suffix - suffix for output names
-'''
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#******************************************************************************
+#
+# create_yearly_dhi.py
+# ---------------------------------------------------------
+# Create yearly DHI product
+# More: http://github.com/nextgis/dhi
+#
+# Usage: 
+#      create_yearly_dhi.py year input_folder output_folder suffix
+#      where:
+#           year            year
+#           input_folder    input folder
+#           output_folder   where to store the result
+#           suffix          suffix to end to resulting file name
+# Example:
+#      python create_yearly_dhi.py 2004 x:\MCD15A2\2003\tif-lai\after-nodata\ y:\dhi\global\lai\ lai
+#
+# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+#
+# This source is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This code is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# A copy of the GNU General Public License is available on the World Wide Web
+# at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+# to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+#******************************************************************************
 
 import os
 import sys
@@ -15,7 +46,6 @@ import shutil
 #prepare environment
 gisbase = os.environ['GISBASE'] = "c:/tools/NextGIS_QGIS/apps/grass/grass-6.4.4/"
 gisdbase = os.environ['GISDBASE'] = "e:/users/maxim/thematic/dhi/"
-#gisdbase = os.environ['GISDBASE'] = "x:/MOD13Q1/2003/tif-ndvi/"
 location = "dhi_grass"
 mapset   = "PERMANENT"
 

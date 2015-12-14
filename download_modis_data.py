@@ -1,11 +1,42 @@
-'''Prepare GeoTIFF data from MODIS HDFs for DHI calculation. To run:
-   python download_data.py 2003 92 http://e4ftl01.cr.usgs.gov/MOTA/MCD15A3.005/ x:\MCD15A3\2003\ no
-dates - dates (years or precise dates) to download, separated by comma if several
-numslices - number of slices per year
-datalink - link to data pool (i.e. http://e4ftl01.cr.usgs.gov/MOTA/MCD15A3.005/)
-wd - folder where to store downloaded files
-create_hdf_folder - if yes, hdf subfolder will be created for each date, else hdf folder will be created for the whole session
-'''
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#******************************************************************************
+#
+# download_modis_data.py
+# ---------------------------------------------------------
+# Download MODIS data
+# More: http://github.com/nextgis/dhi
+#
+# Usage: 
+#      download_modis_data.py year numslices url output_folder create_hdf_folder
+#      where:
+#           year               year
+#           numslices          number of time periods per year
+#           url                base url where to download from
+#           output_folder      where to store downloaded file
+#           create_hdf_folder  if yes, hdf subfolder will be created for each date, else hdf folder will be created for the whole session
+# Example:
+#      python download_modis_data.py 2003 92 http://e4ftl01.cr.usgs.gov/MOTA/MCD15A3.005/ x:\MCD15A3\2003\ no
+#
+# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+#
+# This source is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This code is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# A copy of the GNU General Public License is available on the World Wide Web
+# at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+# to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+#******************************************************************************
 
 import sys
 import os

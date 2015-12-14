@@ -1,8 +1,40 @@
-'''Calculate stable landcovers, i.e. landcovers that never changed during whole time period
-   stable_landcovers.py y:\landcover\global\fpar-lai\ fpar
-input_folder - where are input TIFs
-suffix - product, used for filenames and colors assignment
-'''
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#******************************************************************************
+#
+# landcovers_stable.py
+# ---------------------------------------------------------
+# Calculate stable landcovers, i.e. landcovers that never changed during whole time period
+# More: http://github.com/nextgis/dhi
+#
+# Usage: 
+#      landcovers_stable.py input_folder suffix final_name
+#      where:
+#           input_folder    input folder with HDFs
+#           suffix          subdataset code (use gdalinfo to get it)
+#           final_name      output folder with TIFs
+# Examples:
+#      python landcovers_stable.py y:\landcover\global\fpar-lai\ fpar stable_landcovers.tif
+#
+# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+#
+# This source is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This code is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# A copy of the GNU General Public License is available on the World Wide Web
+# at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+# to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+#******************************************************************************
 
 import glob
 import os
@@ -12,6 +44,7 @@ import string
 wd = sys.argv[1]
 os.chdir(wd)
 suffix = sys.argv[2]
+final_name = sys.argv[3]
 startyear = 2003
 endyear = 2012
 
@@ -78,18 +111,19 @@ cmd = 'gdal_calc --overwrite -A sum.tif --outfile=_res.tif --calc="255*(A==0)+0*
 os.system(cmd)
 
 #assign colortable
-cmd = 'python e:/users/maxim/thematic/dhi/scripts/add_colortable.py y:/landcover/global/fpar-lai/_res.tif y:/landcover/global/fpar-lai/stable_landscapes.tif e:/users/maxim/thematic/dhi/scripts/colortables/fpar.txt'
+cmd = 'python e:/users/maxim/thematic/dhi/scripts/add_colortable.py _res.tif ' + final_name + ' e:/users/maxim/thematic/dhi/scripts/colortables/' + suffix + '.txt'
 os.system(cmd)
 
 #clean up
-for c in range(numclasses + 1):
-    os.remove(str(c) + '_sum.tif')
-    os.remove(str(c) + '_stable.tif')
-    os.remove(str(c) + '_stable1.tif')
-    for year in range(startyear,endyear+1):
-        year = str(year) + '.tif'
-        year_c = year.replace('.tif','_' + str(c) + '.tif')
-        os.remove(year_c)
+if os.path.exists(final_name):
+    for c in range(numclasses + 1):
+        os.remove(str(c) + '_sum.tif')
+        os.remove(str(c) + '_stable.tif')
+        os.remove(str(c) + '_stable1.tif')
+        for year in range(startyear,endyear+1):
+            year = str(year) + '.tif'
+            year_c = year.replace('.tif','_' + str(c) + '.tif')
+            os.remove(year_c)
         
 os.remove('sum.tif')
 os.remove('_res.tif')

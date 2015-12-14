@@ -3,10 +3,21 @@
 
 #******************************************************************************
 #
-# get_unique.py
+# qa_all.py
 # ---------------------------------------------------------
 # Apply QA rasters to DATA rasters to produce patched versions
-# More: http://gis-lab.info/qa/dhi-scripts.html
+# More: http://github.com/nextgis/dhi
+#
+# Usage: 
+#      qa_all.py [-h] [-iq INPUT_DIR_QA] [-ir INPUT_DIR_RS] [-o OUTPUT_DIR] [-s SKIP_MASKS]
+#      where:
+#           -h   show this help message and exit
+#           -iq  directory with input QA rasters
+#           -ir  directory with input rasters to apply QA to
+#           -o   directory where patched rasters will be stored
+#           -s   Skip creation of binary masks if they exist to reuse them (yes/no)
+# Example:
+#      python qa_all.py -iq x:\MOD17A2\2003\tif-gpp\qa\ -ir x:\MOD17A2\2003\tif-gpp\ -o x:\MOD17A2\2003\tif-gpp-qa\ -s yes
 #
 # Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
 #
@@ -25,8 +36,6 @@
 # to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 # MA 02111-1307, USA.
 #
-# Running: python gdal-qa-all.py -iq x:\MOD17A2\2003\tif-gpp\qa\ -ir x:\MOD17A2\2003\tif-gpp\ -o x:\MOD17A2\2003\tif-gpp-qa\ -s yes
-#
 #******************************************************************************
 
 import glob
@@ -34,7 +43,7 @@ import os
 import sys
 import argparse
 
-parser = argparse.ArgumentParser(prog='PROG')
+parser = argparse.ArgumentParser()
 parser.add_argument('-iq','--input_dir_qa', help='Directory with input QA rasters')
 parser.add_argument('-ir','--input_dir_rs', help='Directory with input rasters to apply QA to')
 parser.add_argument('-o','--output_dir', help='Directory where patched rasters will be stored')

@@ -1,15 +1,42 @@
-#!/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''Prepare GeoTIFF data from MODIS HDFs for DHI calculation. To run:
-   python prepare_data.py 2003 MOD_Grid_MOD15A2:Fpar_1km x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\before-nodata\ 0.0083 4326
-year - year for which data should be processed
-band_number - order number of sds to import (starts with 1)
-input_folder - where are input HDFs (this is folder of folders)
-output_folder - where to store resulting TIFs
-res - resolution
-epsg - code for reprojection, 'no' for no reprojection
-'''
+#******************************************************************************
+#
+# prepare_data.py
+# ---------------------------------------------------------
+# Wrapper script that runs other scripts. Converts all HDFs to TIFs (hdf2tif.py), mosaics them all together (merge_all.py) and reprojects to EPSG:4326 or needed.
+# More: http://github.com/nextgis/dhi
+#
+# Usage: 
+#      prepare_data.py dataset x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\ 0.0083 epsg
+#      where:
+#           dataset         SDS name of the dataset to process
+#           input_folder    input folder with HDFs (this is folder of folders)
+#           output_folder   where result will be stored
+#           pixel_size      pixel size, pixels are square
+#           epsg            EPSG code for output file or "no" for default
+# Examples:
+#      python prepare_data.py 2003 MOD_Grid_MOD15A2:Fpar_1km x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\before-nodata\ 0.0083 4326
+#
+# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+#
+# This source is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This code is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# A copy of the GNU General Public License is available on the World Wide Web
+# at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+# to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+#******************************************************************************
 
 import os
 import glob
@@ -17,12 +44,11 @@ import sys
 import calendar
     
 if __name__ == '__main__':
-    year = sys.argv[1]          #2003
-    dataset = sys.argv[2]  #'MOD_Grid_MOD15A2:Lai_1km'
-    id = sys.argv[3]
-    od = sys.argv[4]
-    res = sys.argv[5]
-    epsg = sys.argv[6]  #4326, 'no'
+    dataset = sys.argv[1]  #'MOD_Grid_MOD15A2:Lai_1km'
+    id = sys.argv[2]
+    od = sys.argv[3]
+    res = sys.argv[4]
+    epsg = sys.argv[5]     #4326, 'no'
     
     script_path = 'e:/users/maxim/thematic/dhi/scripts/'
     os.chdir(id)
