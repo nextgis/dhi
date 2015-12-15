@@ -9,9 +9,10 @@
 # More: http://github.com/nextgis/dhi
 #
 # Usage: 
-#      calc_all.py val input_folder output_folder type
+#      calc_all.py [-h] [-t TYPE] val input_folder output_folder
 #      where:
-#           val            all values greater than val will be set to NODATA
+#           -h             show this help message and exit
+#           value          all values greater than val will be set to NODATA
 #           input_folder   input folder
 #           output_folder  output folder
 #           type           Int32, Int16, Float64, UInt16, Byte, UInt32, Float32
@@ -41,18 +42,25 @@ import glob
 import os
 import sys
 import shutil
+import argparse
 
-wd = os.getcwd()
-val = sys.argv[1]
-id = sys.argv[2]
-od = sys.argv[3]
-type = sys.argv[4]
+parser = argparse.ArgumentParser()
+parser.add_argument('val', help='Value to use as a threshold')
+parser.add_argument('input_folder', help='Input folder')
+parser.add_argument('output_folder', help='Output folder')
+parser.add_argument('-t','--type', help='Int32, Int16, Float64, UInt16, Byte, UInt32, Float32')
+args = parser.parse_args()
 
-os.chdir(id)
+if not args.type:
+    type = ''
+else:
+    type = '--type=' + args.type
+
+os.chdir(args.id)
 
 tifs = glob.glob('*.tif')
 for tif in tifs:
-    cmd = 'gdal_calc.bat ' + type + '-A ' + tif + ' --outfile=temp.tif ' + tif + ' --calc="A*(A>' + val + ') " --NoDataValue=0'
+    cmd = 'gdal_calc.bat ' + type + '-A ' + tif + ' --outfile=temp.tif ' + tif + ' --calc="A*(A>' + args.val + ') " --NoDataValue=0'
     os.system(cmd)
     
-    shutil.move('temp.tif',od + tif)
+    shutil.move('temp.tif',args.od + tif)

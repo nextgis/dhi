@@ -9,8 +9,9 @@
 # More: http://github.com/nextgis/dhi
 #
 # Usage: 
-#      colortable_all.py input_folder output_folder colortable
+#      colortable_all.py [-h] input_folder output_folder colortable
 #      where:
+#           -h             show this help message and exit
 #           input_folder   input folder
 #           output_folder  output folder
 #           colortable     path to colortable
@@ -40,12 +41,15 @@ import glob
 import os
 import shutil
 import sys
+import argparse
 
-wd = os.getcwd()
-f_clrs_name = sys.argv[1]
-id = sys.argv[2]
-od = sys.argv[3]
-os.chdir(id)
+parser = argparse.ArgumentParser()
+parser.add_argument('input_folder', help='Input folder')
+parser.add_argument('output_folder', help='Output folder')
+parser.add_argument('colortable', help='Path to colortable')
+args = parser.parse_args()
+
+os.chdir(args.input_folder)
 
 tifs = glob.glob('*.tif')
 for f_in_name in tifs:
@@ -56,7 +60,7 @@ for f_in_name in tifs:
     
     f_vrt_in = open(f_vrt_name,'rb')
     f_vrt_out = open(f_vrt_name2,'wb')
-    f_clrs = open(f_clrs_name,'rb')
+    f_clrs = open(args.colortable,'rb')
     
     for str in f_vrt_in:
         if "<ColorInterp>Gray" in str or "<ColorInterp>Palette" in str:
@@ -75,7 +79,7 @@ for f_in_name in tifs:
     cmd = "gdal_translate " + f_vrt_name2 + " temp.tif"
     os.system(cmd)
     os.remove(f_in_name)
-    shutil.move('temp.tif',od + f_in_name)
+    shutil.move('temp.tif',args.output_folder + f_in_name)
     os.remove(f_vrt_name)
     os.remove(f_vrt_name2)
     

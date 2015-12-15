@@ -45,18 +45,19 @@ python create_combined_dhi.py x:\MOD13A2\ x:\MOD13A2\combined\gpp\ y:\dhi\global
 
 python extract_values.py -g e:\users\maxim\thematic\dhi\random_points\other\fpar8.shp  -d y:\dhi\global\fpar_8\ -e tif
 
-python prepare_data.py 2003 MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi\ 0.002 4326
+python prepare_data.py 2003 MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi\ 0.002
 python prepare_data.py 2003 "MOD_Grid_MOD15A2:FparLai_QC" x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\qa\ 0.0083
-python prepare_data.py 2003 "MODIS_Grid_16DAY_250m_500m_VI:250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi-sin\ 250 no
+python prepare_data.py 2003 "MODIS_Grid_16DAY_250m_500m_VI:250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi-sin\ 250
 
-for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:Lai_1km x:\MCD15A2\%i\hdf\ x:\MCD15A2\%i\tif-lai\ 0.0083 4326
-for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:FparLai_QC x:\MCD15A3\%i\hdf\ x:\MCD15A2\%i\qa\ 0.0083 4326
-for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Gpp_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\tif-gpp\ 0.0083 4326
-for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Psn_QC_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\qa\ 0.0083 4326
-for /L %i in (2001,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days NDVI" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\tif-ndvi\ 0.00416 4326
-for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days NDVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-ndvi\ 0.0083 4326
-for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days EVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-evi\ 0.0083 4326
-for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days VI Quality" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\qa\ 0.0083 4326
+for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:Lai_1km x:\MCD15A2\%i\hdf\ x:\MCD15A2\%i\tif-lai\ 0.0083
+for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:FparLai_QC x:\MCD15A3\%i\hdf\ x:\MCD15A2\%i\qa\ 0.0083
+for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Gpp_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\tif-gpp\ 0.0083
+for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Psn_QC_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\qa\ 0.0083
+for /L %i in (2001,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days NDVI" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\tif-ndvi\ 0.00416
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days NDVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-ndvi\ 0.0083
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days EVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-evi\ 0.0083
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days VI Quality" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\qa\ 0.0083
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days VI Quality" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\qa\ 0.00416
 
 
 python hdf2tif.py MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD13Q1\2003\hdf\2003.01.01\ x:\MOD13Q1\2003\tif-ndvi\\
@@ -175,4 +176,4 @@ for /L %i in (2003,1,2014) DO (
 xcopy test.* combined.*
 python e:\users\maxim\Programming\python\extract_values\extract_values.py combined.shp -g -rl y:\dhi\global\lai_4\combined-v3\dhi_lai4qa_f.tif
 
-python get_unique.py fill-values-search\MCD15A2-fpar.txt -fs x:\MCD15A2\2003\tif-fpar-qa\,x:\MCD15A2\2004\tif-fpar-qa\,x:\MCD15A2\2005\tif-fpar-qa\,x:\MCD15A2\2006\tif-fpar-qa\,x:\MCD15A2\2007\tif-fpar-qa\,x:\MCD15A2\2008\tif-fpar-qa\,x:\MCD15A2\2009\tif-fpar-qa\,x:\MCD15A2\2010\tif-fpar-qa\,x:\MCD15A2\2011\tif-fpar-qa\,x:\MCD15A2\2012\tif-fpar-qa\,x:\MCD15A2\2013\tif-fpar-qa\,x:\MCD15A2\2014\tif-fpar-qa\
+python get_unique.py fill-values-search\MCD15A3-lai-qa.txt -fs x:\MCD15A3\2003\tif-lai-qa\,x:\MCD15A3\2004\tif-lai-qa\,x:\MCD15A3\2005\tif-lai-qa\,x:\MCD15A3\2006\tif-lai-qa\,x:\MCD15A3\2007\tif-lai-qa\,x:\MCD15A3\2008\tif-lai-qa\,x:\MCD15A3\2009\tif-lai-qa\,x:\MCD15A3\2010\tif-lai-qa\,x:\MCD15A3\2011\tif-lai-qa\,x:\MCD15A3\2012\tif-lai-qa\,x:\MCD15A3\2013\tif-lai-qa\,x:\MCD15A3\2014\tif-lai-qa\

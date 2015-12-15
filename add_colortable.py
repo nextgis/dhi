@@ -9,11 +9,12 @@
 # More: http://github.com/nextgis/dhi
 #
 # Usage: 
-#      add_colortable.py input output colortable
+#      add_colortable.py [-h] input output colortable
 #      where:
+#           -h          show this help message and exit
 #           input       input GeoTIFF with Gray legend to which colortable will be attached
 #           output      output GeoTIFF
-#           colortable  path to colortable e:\dhi\colortables\fpar.txt
+#           colortable  path to colortable, i.e. e:\dhi\colortables\fpar.txt
 # Example:
 #      python add_colortable.py input.tif output.tif 
 #
@@ -39,6 +40,7 @@
 import os
 import sys
 import shutil
+import argparse
 
 def attach_color_table(f_in_name,f_out_name,f_clrs_name):
     f_vrt_name = f_in_name.replace(".tif",".vrt")
@@ -69,10 +71,12 @@ def attach_color_table(f_in_name,f_out_name,f_clrs_name):
     os.remove(f_vrt_name2)
     
 if __name__ == '__main__':
-    input = sys.argv[1]
-    output = sys.argv[2]
-    colortable = sys.argv[3]
+    parser = argparse.ArgumentParser()
+    parser.add_argument('input', help='Input GeoTIFF')
+    parser.add_argument('output', help='Output GeoTIFF')
+    parser.add_argument('colortable', help='Path to colortable')
+    args = parser.parse_args()
     
     #attach color table
-    attach_color_table(input,output,colortable)
+    attach_color_table(args.input,args.output,args.colortable)
     

@@ -48,7 +48,6 @@ parser.add_argument('-iq','--input_dir_qa', help='Directory with input QA raster
 parser.add_argument('-ir','--input_dir_rs', help='Directory with input rasters to apply QA to')
 parser.add_argument('-o','--output_dir', help='Directory where patched rasters will be stored')
 parser.add_argument('-s','--skip_masks', help='Skip creation of binary masks if they exist (yes/no)')
-
 args = parser.parse_args()
 
 wd = os.getcwd()
