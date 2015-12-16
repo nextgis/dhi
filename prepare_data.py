@@ -9,7 +9,7 @@
 # More: http://github.com/nextgis/dhi
 #
 # Usage: 
-#      prepare_data.py [-h] [-e EPSG] dataset input_folder output_folder pixel_size
+#      prepare_data.py [-h] [-ps PIXEL_SIZE] [-e EPSG] dataset input_folder output_folder
 #      where:
 #           -h              show this help message and exit
 #           dataset         SDS name of the dataset to process
@@ -18,7 +18,7 @@
 #           pixel_size      Output resolution, pixels are square
 #           epsg            EPSG code for output file, EPSG:4326 if empty
 # Examples:
-#      python prepare_data.py 2003 MOD_Grid_MOD15A2:Fpar_1km x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\before-nodata\ 0.0083 4326
+#      python prepare_data.py MOD_Grid_MOD15A2:Fpar_1km x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\ -ps 0.0083 -e 4326
 #
 # Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
 #
@@ -48,7 +48,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('dataset', help='SDS name of the dataset to process')  #'MOD_Grid_MOD15A2:Lai_1km'
 parser.add_argument('input_folder', help='Input folder with HDFs (this is folder of folders)')
 parser.add_argument('output_folder', help='Where to store the results')
-parser.add_argument('pixel_size', help='Output resolution, pixels are square')
+parser.add_argument('-ps','--pixel_size', help='Output resolution, pixels are square')
 parser.add_argument('-e','--epsg', help='EPSG code for output file, EPSG:4326 if empty')
 args = parser.parse_args()
     
@@ -61,7 +61,12 @@ if __name__ == '__main__':
     if args.epsg:
         epsg = '-t_srs EPSG:' + args.epsg
     else:
-        epsg = ''
+        epsg = '-t_srs EPSG:4326'
+    
+    if args.pixel_size:
+        pixel_size = ' -tr ' + args.pixel_size + ' ' + args.pixel_size
+    else:
+        pixel_size = ''
     
     for date in dates:
         cmd = 'python ' + script_path + 'hdf2tif.py ' + args.dataset.split(':')[0] + ':' + '\"' + args.dataset.split(':')[1] + '\" ' + id + date + '\\ ' + id + date + '\\'
@@ -69,10 +74,10 @@ if __name__ == '__main__':
         os.system(cmd)
         
         if not os.path.exists(date + '.vrt'):
-            cmd = 'python ' + script_path + 'merge_all.py ' + date + '.vrt no 0 '  + id + date + '\\ ' + id + date + '\\'
+            cmd = 'python ' + script_path + 'merge_all.py ' + date + '.vrt '  + id + date + '\\ ' + id + date + '\\ '
             os.system(cmd)
         
         if not os.path.exists(args.output_folder + date + '.tif'):
-            cmd = 'gdalwarp ' + epsg + ' -tr ' + args.pixel_size + ' ' + args.pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + args.output_folder + date + '.tif'
+            cmd = 'gdalwarp ' + epsg + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + args.output_folder + date + '.tif'
             os.system(cmd)
         

@@ -11,12 +11,13 @@
 # Usage: 
 #      landcovers_majority.py input_folder suffix final_name numclasses
 #      where:
+#           -h              show this help message and exit
 #           input_folder    input folder with HDFs
+#           output          output file with path
 #           suffix          subdataset code (use gdalinfo to get it)
-#           final_name      output folder with TIFs
 #           numclasses      number of classes in this landcover
 # Examples:
-#      python landcovers_majority.py y:\landcover\global\fpar-lai\ fpar majority_landcovers.tif 11
+#      python landcovers_majority.py y:\landcover\global\fpar-lai\ majority_landcovers.tif fpar 11
 #
 # Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
 #
@@ -41,21 +42,26 @@ import glob
 import os
 import sys
 import string
+import argparse
 
-wd = sys.argv[1]
-os.chdir(wd)
-suffix = sys.argv[2]
-final_name = sys.argv[3]
+parser = argparse.ArgumentParser()
+parser.add_argument('input_folder', help='Input folder with TIFs')
+parser.add_argument('output', help='Output file with path')
+parser.add_argument('suffix', help='Product')
+parser.add_argument('numclasses', help='Number of classes in this landcover', type=int)
+args = parser.parse_args()
+
+os.chdir(args.input_folder)
 startyear = 2003
 endyear = 2012
 
 #separate each landcover year into binary masks
-numclasses = int(sys.argv[4])
+numclasses = args.numclasses
 numyears = len(range(startyear,endyear+1))
 
 for c in range(0, numclasses + 1):
     for year in range(startyear,endyear+1):
-        year = 'lc_' + str(year) + '_' + suffix + '.tif'
+        year = 'lc_' + str(year) + '_' + args.suffix + '.tif'
         year_c = year.replace('.tif','_' + str(c) + '.tif')
         cmd = 'gdal_calc --overwrite -A ' + year + ' --outfile=' + year_c + ' --calc="1*(A==' + str(c) + ')"'
         print(cmd)
@@ -112,11 +118,11 @@ cmd = 'gdal_calc --overwrite -A sum.tif --outfile=_res.tif --calc="255*(A==0)+0*
 os.system(cmd)
 
 #assign colortable
-cmd = 'python e:/users/maxim/thematic/dhi/scripts/add_colortable.py _res.tif ' + final_name + ' e:/users/maxim/thematic/dhi/scripts/colortables/' + suffix + '.txt'
+cmd = 'python e:/users/maxim/thematic/dhi/scripts/add_colortable.py _res.tif ' + agrs.output + ' e:/users/maxim/thematic/dhi/scripts/colortables/' + suffix + '.txt'
 os.system(cmd)
 
 #clean up
-if os.path.exists(final_name):
+if os.path.exists(agrs.output):
     for c in range(numclasses + 1):
         os.remove(str(c) + '_sum.tif')
         os.remove(str(c) + '_stable.tif')

@@ -9,14 +9,15 @@
 # More: http://github.com/nextgis/dhi
 #
 # Usage: 
-#      create_yearly_dhi.py year input_folder output_folder suffix
+#      create_yearly_dhi.py [-h] [-s SUFFIX] year input_folder output_folder
 #      where:
+#           -h              show this help message and exit
 #           year            year
-#           input_folder    input folder
+#           input_folder    input folder with TIFs
 #           output_folder   where to store the result
 #           suffix          suffix to end to resulting file name
 # Example:
-#      python create_yearly_dhi.py 2004 x:\MCD15A2\2003\tif-lai\after-nodata\ y:\dhi\global\lai\ lai
+#      python create_yearly_dhi.py 2004 x:\MCD15A2\2003\tif-lai\ y:\dhi\global\lai\ -s lai
 #
 # Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
 #
@@ -42,6 +43,14 @@ import sys
 import glob
 import time
 import shutil
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('year', help='Year')
+parser.add_argument('input_folder', help='Input folder with TIFs')
+parser.add_argument('output_folder', help='Where to store the result')
+parser.add_argument('-s', '--suffix', help='suffix to end to resulting file name')
+args = parser.parse_args()
 
 #prepare environment
 gisbase = os.environ['GISBASE'] = "c:/tools/NextGIS_QGIS/apps/grass/grass-6.4.4/"
@@ -55,13 +64,12 @@ import grass.script as grass
 import grass.script.setup as gsetup
 gsetup.init(gisbase, gisdbase, location, mapset)
 
-year = sys.argv[1]
-id = sys.argv[2]
-od = sys.argv[3]
+year = args.year
+od = args.output_folder
 prefix = 'dhi'
-suffix = sys.argv[4]
-os.chdir(id)
-fn_out = prefix + '_' + year + '_' + suffix + '.tif'
+if not args.suffix: args.suffix = ''
+os.chdir(args.input_folder)
+fn_out = prefix + '_' + year + '_' + args.suffix + '.tif'
 
 t = time.time()
 

@@ -11,6 +11,7 @@
 # Usage: 
 #      hdf2tif.py dataset input_folder output_folder
 #      where:
+#           -h              show this help message and exit
 #           dataset         subdataset code (use gdalinfo to get it)
 #           input_folder    input folder with HDFs
 #           output_folder   output folder with TIFs
@@ -40,21 +41,24 @@ import glob
 import sys
 import os
 from progressbar import *
+import argparse
 
 def resample(hdf,f_out_name):
-    cmd = 'gdal_translate -q ' + pref + '\"' + hdf + '\":' + dataset.split(':')[0] + ':' + '\"' + dataset.split(':')[1] + '\"' + ' ' + od + f_out_name
-    #print(cmd)
+    cmd = 'gdal_translate -q ' + pref + '\"' + hdf + '\":' + dataset.split(':')[0] + ':' + '\"' + dataset.split(':')[1] + '\"' + ' ' + args.output_folder + f_out_name
     os.system(cmd)
 
 if __name__ == '__main__':
-    dataset = sys.argv[1]   #MOD44B_250m_GRID:Percent_Tree_Cover - example
-    id = sys.argv[2]
-    od = sys.argv[3]
+    parser = argparse.ArgumentParser()
+    parser.add_argument('dataset', help='Subdataset code (use gdalinfo to get it)')
+    parser.add_argument('input_folder', help='Output folder with HDFs')
+    parser.add_argument('output_folder', help='Output folder with HDFs')
+    args = parser.parse_args()
     
-    print os.getcwd()
-    print(id)
+    dataset = args.dataset   #MOD44B_250m_GRID:Percent_Tree_Cover - example
     
-    os.chdir(id)
+    print(args.input_folder)
+    
+    os.chdir(args.input_folder)
     hdfs = glob.glob("*.hdf")
     pref = 'HDF4_EOS:EOS_GRID:'
     
@@ -64,7 +68,7 @@ if __name__ == '__main__':
     for hdf in hdfs:
         #f_out_name = hdf + ".tif"
         f_out_name = hdf[17:23] + ".tif"
-        if not os.path.exists(od + f_out_name):
+        if not os.path.exists(args.output_folder + f_out_name):
             resample(hdf,f_out_name)
             pbar.update(pbar.currval+1)
         

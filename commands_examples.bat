@@ -42,23 +42,23 @@ python create_combined_dhi.py x:\MCD15A3\ x:\MCD15A3\combined\fpar4\ y:\dhi\glob
 python create_combined_dhi.py x:\MCD15A3\ x:\MCD15A3\combined\lai4\ y:\dhi\global\lai_4\combined-v3\ lai4qa lai
 python create_combined_dhi.py x:\MCD17A2\ x:\MCD17A2\combined\gpp\ y:\dhi\global\gpp\combined-v3\ gppqa gpp
 python create_combined_dhi.py x:\MOD13A2\ x:\MOD13A2\combined\gpp\ y:\dhi\global\ndvi\1000\combined-v3\ ndviqa ndvi
+python create_combined_dhi.py x:\MOD13A2\ y:\dhi\global\evi\1000\combined-v3\ -s eviqa evi
 
 python extract_values.py -g e:\users\maxim\thematic\dhi\random_points\other\fpar8.shp  -d y:\dhi\global\fpar_8\ -e tif
 
-python prepare_data.py 2003 MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi\ 0.002
-python prepare_data.py 2003 "MOD_Grid_MOD15A2:FparLai_QC" x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\qa\ 0.0083
-python prepare_data.py 2003 "MODIS_Grid_16DAY_250m_500m_VI:250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi-sin\ 250
+python prepare_data.py MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi\ -ps 0.002
+python prepare_data.py "MOD_Grid_MOD15A2:FparLai_QC" x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\qa\ -ps 0.0083
+python prepare_data.py "MODIS_Grid_16DAY_250m_500m_VI:250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi-sin\ -ps 250
 
-for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:Lai_1km x:\MCD15A2\%i\hdf\ x:\MCD15A2\%i\tif-lai\ 0.0083
-for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:FparLai_QC x:\MCD15A3\%i\hdf\ x:\MCD15A2\%i\qa\ 0.0083
-for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Gpp_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\tif-gpp\ 0.0083
-for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Psn_QC_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\qa\ 0.0083
-for /L %i in (2001,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days NDVI" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\tif-ndvi\ 0.00416
-for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days NDVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-ndvi\ 0.0083
-for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days EVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-evi\ 0.0083
-for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days VI Quality" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\qa\ 0.0083
-for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days VI Quality" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\qa\ 0.00416
-
+for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:Lai_1km x:\MCD15A2\%i\hdf\ x:\MCD15A2\%i\tif-lai\ -ps 0.0083
+for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:FparLai_QC x:\MCD15A3\%i\hdf\ x:\MCD15A2\%i\qa\ -ps 0.0083
+for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Gpp_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\tif-gpp\ -ps 0.0083
+for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Psn_QC_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\qa\ -ps 0.0083
+for /L %i in (2001,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days NDVI" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\tif-ndvi\ -ps 0.00416
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days NDVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-ndvi\ -ps 0.0083
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days EVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-evi\ -ps 0.0083
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days VI Quality" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\qa\ -ps 0.0083
+for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days VI Quality" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\qa\ -ps 0.00416
 
 python hdf2tif.py MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD13Q1\2003\hdf\2003.01.01\ x:\MOD13Q1\2003\tif-ndvi\\
 
@@ -176,4 +176,4 @@ for /L %i in (2003,1,2014) DO (
 xcopy test.* combined.*
 python e:\users\maxim\Programming\python\extract_values\extract_values.py combined.shp -g -rl y:\dhi\global\lai_4\combined-v3\dhi_lai4qa_f.tif
 
-python get_unique.py fill-values-search\MCD15A3-lai-qa.txt -fs x:\MCD15A3\2003\tif-lai-qa\,x:\MCD15A3\2004\tif-lai-qa\,x:\MCD15A3\2005\tif-lai-qa\,x:\MCD15A3\2006\tif-lai-qa\,x:\MCD15A3\2007\tif-lai-qa\,x:\MCD15A3\2008\tif-lai-qa\,x:\MCD15A3\2009\tif-lai-qa\,x:\MCD15A3\2010\tif-lai-qa\,x:\MCD15A3\2011\tif-lai-qa\,x:\MCD15A3\2012\tif-lai-qa\,x:\MCD15A3\2013\tif-lai-qa\,x:\MCD15A3\2014\tif-lai-qa\
+python get_unique.py fill-values-search\MOD13-evi.txt -fs x:\MOD13A2\2003\tif-ndvi-qa\,x:\MOD13A2\2004\tif-ndvi-qa\,x:\MOD13A2\2005\tif-ndvi-qa\,x:\MOD13A2\2006\tif-ndvi-qa\,x:\MOD13A2\2007\tif-ndvi-qa\,x:\MOD13A2\2008\tif-ndvi-qa\,x:\MOD13A2\2009\tif-ndvi-qa\,x:\MOD13A2\2010\tif-ndvi-qa\,x:\MOD13A2\2011\tif-ndvi-qa\,x:\MOD13A2\2012\tif-ndvi-qa\,x:\MOD13A2\2013\tif-ndvi-qa\,x:\MOD13A2\2014\tif-ndvi-qa\

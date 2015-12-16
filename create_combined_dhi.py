@@ -18,7 +18,7 @@
 #           suffix          suffix to end to resulting file name
 #           product         product code used in folder name
 # Example:
-#      python create_combined_dhi.py x:\MCD15A2\ x:\MCD15A2\combined\fpar8\ y:\dhi\global\fpar_8\combined-v2\ fpar8 fpar
+#      python create_combined_dhi.py -s fpar8 x:\MCD15A2\ x:\MCD15A2\combined\fpar8\ y:\dhi\global\fpar_8\combined-v2\ fpar
 #
 # Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
 #
@@ -104,8 +104,8 @@ if args.output_folder1:
         cmd = "gdal_edit -a_srs \"EPSG:4326\" " + od1 + str(i) + '_avg.tif'
         os.system(cmd)
     
-if not args.suffix: suffix = ''
-fn_out = prefix + '_' + suffix + '_f.tif'
+if not args.suffix: args.suffix = ''
+fn_out = prefix + '_' + args.suffix + '_f.tif'
 
 t = '_f'
 list = ''
