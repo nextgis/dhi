@@ -122,8 +122,7 @@ grass.run_command('i.group', group='rgb_group' + t, input='dh1' + t + ',dh2' + t
 grass.run_command('r.out.gdal', input='rgb_group' + t, output=fn_out, type='Float32', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES')
 od2 = args.output_folder2
 shutil.move(fn_out,od2 + fn_out)
-shutil.move(fn_out + '.aux.xml',od + fn_out + '.aux.xml')
-
+shutil.move(fn_out + '.aux.xml',od2 + fn_out + '.aux.xml')
 shutil.move(fn_out.replace('.tif','.tfw'),od2 + fn_out.replace('.tif','.tfw'))
 
 cmd = "gdal_edit -a_srs \"EPSG:4326\" " + od2 + fn_out

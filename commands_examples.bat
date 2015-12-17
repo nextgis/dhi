@@ -100,6 +100,7 @@ for /L %i in (2003,1,2014) DO python qa_all.py x:\MOD17A2\%i\qa\ x:\MOD17A2\%i\t
 for /L %i in (2003,1,2014) DO python qa_all.py -iq x:\MOD17A2\%i\qa\ -ir x:\MOD17A2\%i\tif-gpp\ -o x:\MOD17A2\%i\tif-gpp-qa\ -s yes
 for /L %i in (2003,1,2014) DO python qa_all.py -iq x:\MOD15A2\%i\qa\ -ir x:\MOD15A2\%i\tif-evi\ -o x:\MOD15A2\%i\tif-evi-qa\ -s yes
 for /L %i in (2003,1,2014) DO python qa_all.py x:\MOD13A2\%i\qa\ x:\MOD13A2\%i\tif-ndvi\ x:\MOD13A2\%i\tif-ndvi-qa\
+for /L %i in (2003,1,2014) DO python qa_all.py x:\MOD13A1\%i\qa\ x:\MOD13A1\%i\tif-ndvi\ x:\MOD13A1\%i\tif-ndvi-qa\
 
 for /L %i in (2003,1,2014) DO python calc_all.py 32761 x:\MOD17A2\%i\tif-gpp\ x:\MOD17A2\%i\tif-gpp\
 for /L %i in (2003,1,2014) DO python calc_all.py -3000 x:\MOD13A2\%i\tif-evi\ x:\MOD13A2\%i\tif-evi\
