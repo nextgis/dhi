@@ -77,7 +77,7 @@ if __name__ == '__main__':
             cmd = 'python ' + script_path + 'merge_all.py ' + date + '.vrt '  + id + date + '\\ ' + id + date + '\\ '
             os.system(cmd)
         
-        if not os.path.exists(args.output_folder + date + '.tif'):
+        if not os.path.exists(args.output_folder + date + '.tif') and os.path.exists(id + date + '\\' + date + '.vrt'):
             cmd = 'gdalwarp ' + epsg + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + args.output_folder + date + '.tif'
             os.system(cmd)
         

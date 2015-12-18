@@ -57,6 +57,10 @@ fn = args.output        #filename.vrt or filename.tif
 os.chdir(args.input_folder)
 
 tifs = glob.glob('*.tif')
+if len(tifs) == 0:
+        print("Nothing to merge. Exiting.")
+        sys.exit(1)
+        
 list_of_tifs = ' '.join(tifs)
 
 if args.separate: 

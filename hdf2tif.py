@@ -60,6 +60,10 @@ if __name__ == '__main__':
     
     os.chdir(args.input_folder)
     hdfs = glob.glob("*.hdf")
+    if len(hdfs) == 0:
+        print("Nothing to convert. Exiting.")
+        sys.exit(1)
+        
     pref = 'HDF4_EOS:EOS_GRID:'
     
     pbar = ProgressBar(widgets=[Bar('=', '[', ']'), ' ', Counter(), " of " + str(len(hdfs)), ' ', ETA()]).start()
