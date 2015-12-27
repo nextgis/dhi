@@ -86,14 +86,6 @@ import os
 
 import logging
 
-
-
-if "GISBASE" not in os.environ:
-    sys.stderr.write("You must be in GRASS GIS to run this program.\n")
-    sys.exit(1)
-
-import grass.script as grass
-
 def setup_log(logfile, mapset, level=logging.DEBUG):
     logger = logging.getLogger(mapset)
     logger.setLevel(level)
@@ -125,10 +117,15 @@ def main(options, flags):
     logger = setup_log(logfile, mapset)
     
     logger.info('Start calculations in "%s" mapset' % (mapset, ))
-    
-    grass.run_command('g.mapset', mapset=mapset, quiet=True)
+      
     tmp = grass.read_command('g.mapset', flags='p')
-    logger.debug('Enter in "%s" mapset' % (tmp.strip(), ))
+    tmp = tmp.strip()
+    if mapset != tmp:
+        message = "Failed to change mapset. Current mapset is %s, desired mapset is %s. Exit the program" % (tmp, mapset)
+        logger.error(message)
+        grass.fatal(message)
+          
+    logger.debug('Enter in "%s" mapset' % (tmp, ))
 
     maps = grass.read_command('g.list', type='raster', separator=',',
         mapset='PERMANENT', pattern="%s*" % (input_prefix, ))
@@ -161,6 +158,24 @@ def main(options, flags):
     logger.info('Calculations in "%s" mapset done' % (mapset, ))
 
 if __name__ == "__main__":
+    gisbase = os.environ['GISBASE']
+    gisdbase = os.environ['GISDBASE']
+    location = os.environ['LOCATION_NAME']
+    
+    # Find mapset in params:
+    for param in sys.argv:
+        if not 'mapset=' in param:
+            continue
+        else:
+            break
+    mapset = param.split('=')[1]
+    sys.path.append(os.path.join(os.environ['GISBASE'], "etc", "python"))
+    
+    from grass.script.core import gisenv
+    import grass.script as grass
+    import grass.script.setup as gsetup
+    gsetup.init(gisbase, gisdbase, location, mapset)
+
     options, flags = grass.parser()
     sys.exit(main(options, flags))
     
