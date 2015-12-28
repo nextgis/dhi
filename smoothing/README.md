@@ -37,10 +37,10 @@ git clone https://github.com/simgislab/dhi.git
 ```
 
 #### Chunk creation
-You  can create chuncks manually or you can use script create_mapset.py:
+You  can create chuncks manually or you can use script create_mapset.py (run GRASS first):
 
 ```
-python create_mapsets.py -d cols=1000 rows=1000
+python dhi/smoothing/create_mapsets.py -d cols=1000 rows=1000
 ```
 MAPSETs with size 1000x1000 pixels will be created. The mapsets covers default PERMANENT region. The names of the mapsets 
 are consctucted by the rule: 'PREFIX_rowNumber_colNumber'; PREFIX is fixed string and it equals to 'node_'.
