@@ -29,11 +29,18 @@ To run the calculations in several processes you have to:
 
 The steps are described bellow in details.
 
+#### Prepare
+Before running anything, make sure you have all necessary scripts.
+
+```
+git clone https://github.com/simgislab/dhi.git
+```
+
 #### Chunk creation
 You  can create chuncks manually or you can use script create_mapset.py:
 
 ```
-python -d create_mapsets.py cols=1000 rows=1000
+python create_mapsets.py -d cols=1000 rows=1000
 ```
 MAPSETs with size 1000x1000 pixels will be created. The mapsets covers default PERMANENT region. The names of the mapsets 
 are consctucted by the rule: 'PREFIX_rowNumber_colNumber'; PREFIX is fixed string and it equals to 'node_'.
