@@ -93,3 +93,5 @@ to run filter.py in ten mapsets at once, you can use the command:
 ```
 cat nodes | xargs -n1 -I {} -P 10 python filter.py -i -d input=mod2003* step1="res." step2="fin." mapset={}
 ```
+
+Log-file for filtering can be found in current folder (filter.log by default).
