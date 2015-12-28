@@ -37,22 +37,19 @@ git clone https://github.com/simgislab/dhi.git
 ```
 
 #### Chunk creation
-You  can create chuncks manually or you can use script create_mapset.py (run GRASS first):
+You  can create chuncks manually or you can use script create_mapset.py (run in active GRASS session):
 
 ```
 python dhi/smoothing/create_mapsets.py -d cols=1000 rows=1000
 ```
-MAPSETs with size 1000x1000 pixels will be created. The mapsets covers default PERMANENT region. The names of the mapsets 
-are consctucted by the rule: 'PREFIX_rowNumber_colNumber'; PREFIX is fixed string and it equals to 'node_'.
+This will create MAPSETs each 1000x1000 size (smaller on the boundaries if it doesn't divide equally). Mapsets cover default PERMANENT region. The names of the mapsets are: 'PREFIX_rowNumber_colNumber'; PREFIX is fixed string and it equals to 'node_' (yet hardcoded).
 
-*Note.* This procedure have to be done only once. If you want to restart the smoothing procedure and you have the chunks already,
-then skip this step.
+*Note* No new data are created and this procedure have to be done only once. If you want to restart the smoothing procedure and you have the chunks already, skip this step.
 
-*Note.* The script must be executed in active GRASS seesion.
+#### Smoothing in the chunks
+Exit GRASS (just type ```exit```).
 
-#### Smoothing in the chuncks
-
-Export enviroment variables 
+Export enviroment variables: 
  * GISBASE: path to GRASS binary, the subdirectory where GRASS GIS was installed, 
  * GISDBASE: path to GRASS GIS database, 
  * LOCATION_NAME: name of the mapset containig data,
@@ -66,30 +63,32 @@ then the enviroment variables can be exported by the next lines (unux shell comm
 ```
 export GISBASE='/home/local/RUSSELL/kolesov/GRASSBIN/grass-7.0.3svn'
 export GISDBASE='/mnt/kolesov/nimbus/GRASSDATA'
-export LOCATION_NAME='WorldLL'
+export LOCATION_NAME='world'
 export GUI='text'
 export MAPSET='PERMANENT'
 ```
 
-To check if the variables are difined correctly you can run smoothing in one
-chunck (for example for upper-left node, assume that input rasters have prefix "mod2003*"):
+To check if the variables are defined correctly you can run smoothing in one
+chunk (for example for upper-left node, assume that input rasters have prefix "mod2003*"):
 ```
-python filter.py -i -d input=mod2003* step1="res." step2="fin." mapset=node_0_0
+python dhi/smoothing/filter.py -i -d input=mod2003* step1="res." step2="fin." mapset=node_0_0
 ```
-The script filter.py is a wrapper around r.series.filter, it runs the smoothing procedure (two steps)
+
+*Note* Having messages ```WARNING: No data base element files found``` is ok.
+
+The script filter.py is a wrapper around r.series.filter which runs the smoothing procedure (two steps)
 in particular mapset. If it runs without errors, the variables are defined correctly.
 
-
-##### Parallelisation
-To run filter.py in several chuncks simultaneously we have to create a file with list of  all chunk names.
+##### Parallelization
+To run filter.py in several chunks simultaneously we have to create a file with list of  all chunk names.
 To do that we can run the shell command:
 ```
 find "$GISDBASE/$LOCATION_NAME" -name "node_*" | cut -d'/' -f7 > nodes
 ```
-This command creates list of MAPSETs (with pattern "node_*"), then extructs the last part of the paths and saves them
+This command creates list of MAPSETs (with pattern "node_*"), extracts the last part of the path and saves it
 in file "nodes". Note the number of the field (7 in this case) depends on the path.
 
-When you have the list of chunck you can run the parallel calculations using 'xargs' command. For example,
+When you have the list of chunks you can run the parallel calculations using 'xargs' command. For example,
 to run filter.py in ten mapsets at once, you can use the command:
 ```
 cat nodes | xargs -n1 -I {} -P 10 python filter.py -i -d input=mod2003* step1="res." step2="fin." mapset={}
