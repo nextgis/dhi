@@ -33,6 +33,10 @@
 #% key: i
 #% description: Transform results to integer raster maps.
 #%end
+#%flag
+#% key: d
+#% description: remove results of the first step on exit.
+#%end
 #%option
 #% key: input_prefix
 #% type: string
@@ -104,6 +108,7 @@ def setup_log(logfile, mapset, level=logging.DEBUG):
 def main(options, flags):
       
     transform_type = flags['i']
+    remove_first_step = flags['d']
     
     mapset = options['mapset']
     input_prefix = options['input_prefix']
@@ -132,6 +137,7 @@ def main(options, flags):
     maps = maps.strip()
     logger.debug('Found rasters: %s' % (maps, ))
     
+    # remove previouse results (if any)
     grass.run_command('g.remove', type='raster', pattern="%s*" % (step1_resprefix, ), flags='f')
     code = grass.run_command('r.series.filter', input=maps, result_prefix=step1_resprefix, 
         method='median', winsize=winsize, flags='u')
@@ -139,6 +145,7 @@ def main(options, flags):
         logger.error("First step falls")
     else:       
         logger.info("First step done")
+        # remove previouse results (if any)
         grass.run_command('g.remove', type='raster', pattern="%s*" % (step2_resprefix, ), flags='f')
         maps = grass.read_command('g.list', type='raster', separator=',',
             mapset=mapset, pattern="%s*" % (step1_resprefix, ))
@@ -152,9 +159,14 @@ def main(options, flags):
         else:
             logger.info("Second step done")
             if transform_type:
-                logger.error("Raster type transformation doesn't implemented")
+                maps = grass.read_command('g.list', type='raster', pattern="%s*" % (step2_resprefix, ))
+                maps = maps.split()
+                for map in maps:
+                    grass.run_command('r.mapcalc', expression = "%s = round(%s)" % (map, map), overwrite=True)
     
-    
+    if remove_first_step:
+        grass.run_command('g.remove', type='raster', pattern="%s*" % (step1_resprefix, ), flags='f')
+
     logger.info('Calculations in "%s" mapset done' % (mapset, ))
 
 if __name__ == "__main__":
