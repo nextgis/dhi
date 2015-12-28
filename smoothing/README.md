@@ -9,7 +9,7 @@ The scripts are wrappers for r.series.filter GRASS GIS addons module.
 * GRASS GIS 7 (installation is described here: https://github.com/simgislab/dhi/wiki/Install-GRASS);
 * Install numpy (```virtualenv ~/venv; source ~/venv/bin/activate;pip install numpy```)
 * Install scipy (```virtualenv ~/venv; source ~/venv/bin/activate;pip install scipy```)
-* GRASS GIS module r.series.filer (it is avialable from GRASS ADDONS) (to install run ```g.extension r.series.filter```;
+* GRASS GIS module r.series.filer (it is avialable from GRASS ADDONS) (to install run ```g.extension r.series.filter```, to check that it installed ok, run ```r.series.filter help```)
 * (optional) Linux system for parallel computing;
 
 ## Smoothing procedure
