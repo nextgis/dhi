@@ -44,36 +44,46 @@ from progressbar import *
 import argparse
 
 def resample(hdf,f_out_name):
-    cmd = 'gdal_translate -q ' + pref + '\"' + hdf + '\":' + dataset.split(':')[0] + ':' + '\"' + dataset.split(':')[1] + '\"' + ' ' + args.output_folder + f_out_name
+    cmd = 'gdal_translate -q ' + pref + '\"' + hdf + '\":' + dataset.split(':')[0] + ':' + '\"' + dataset.split(':')[1] + '\"' + ' ' + f_out_name
     os.system(cmd)
+    #print(cmd)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('dataset', help='Subdataset code (use gdalinfo to get it)')
     parser.add_argument('input_folder', help='Output folder with HDFs')
-    parser.add_argument('output_folder', help='Output folder with HDFs')
+    #parser.add_argument('output_folder', help='Output folder with HDFs')
+    parser.add_argument('--recurse', action="store_true", help='Walk in directories and use their name as output name')
     args = parser.parse_args()
     
     dataset = args.dataset   #MOD44B_250m_GRID:Percent_Tree_Cover - example
+    folders = []
+    if args.recurse: 
+        subdirs = next(os.walk(args.input_folder))[1]
+        for folder in subdirs:
+            folders.append(os.path.join(args.input_folder, folder))
+    else:
+        folders = [args.input_folder]
     
-    print(args.input_folder)
-    
-    os.chdir(args.input_folder)
-    hdfs = glob.glob("*.hdf")
-    if len(hdfs) == 0:
-        print("Nothing to convert. Exiting.")
-        sys.exit(1)
-        
     pref = 'HDF4_EOS:EOS_GRID:'
     
-    pbar = ProgressBar(widgets=[Bar('=', '[', ']'), ' ', Counter(), " of " + str(len(hdfs)), ' ', ETA()]).start()
-    pbar.maxval = len(hdfs)
-    
-    for hdf in hdfs:
-        #f_out_name = hdf + ".tif"
-        f_out_name = hdf[17:23] + ".tif"
-        if not os.path.exists(args.output_folder + f_out_name):
-            resample(hdf,f_out_name)
-            pbar.update(pbar.currval+1)
+    for folder in folders:
+        print(folder)
+        os.chdir(folder)
+        hdfs = glob.glob("*.hdf")
         
-    pbar.finish()
+        if len(folders) ==1 and len(hdfs) == 0:
+            print("Nothing to convert. Exiting.")
+            sys.exit(1)
+        
+        pbar = ProgressBar(widgets=[Bar('=', '[', ']'), ' ', Counter(), " of " + str(len(hdfs)), ' ', ETA()]).start()
+        pbar.maxval = len(hdfs)
+
+        for hdf in hdfs:
+            #f_out_name = hdf + ".tif"
+            f_out_name = folder + '\\' + hdf[17:23] + ".tif"
+            if not os.path.exists(f_out_name):
+                resample(hdf,f_out_name)
+                pbar.update(pbar.currval+1)
+            
+        pbar.finish()

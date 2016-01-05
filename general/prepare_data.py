@@ -54,7 +54,8 @@ args = parser.parse_args()
     
 if __name__ == '__main__':
     id = args.input_folder
-    script_path = 'e:/users/maxim/thematic/dhi/scripts/'
+    script_path = os.getcwd() + '\\'
+    
     os.chdir(id)
     dates = next(os.walk('.'))[1]
     
@@ -69,7 +70,7 @@ if __name__ == '__main__':
         pixel_size = ''
     
     for date in dates:
-        cmd = 'python ' + script_path + 'hdf2tif.py ' + args.dataset.split(':')[0] + ':' + '\"' + args.dataset.split(':')[1] + '\" ' + id + date + '\\ ' + id + date + '\\'
+        cmd = 'python ' + script_path + 'hdf2tif.py ' + args.dataset.split(':')[0] + ':' + '\"' + args.dataset.split(':')[1] + '\" ' + id + date + '\\'
         #print(cmd)
         os.system(cmd)
         
