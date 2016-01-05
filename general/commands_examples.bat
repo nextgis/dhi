@@ -177,4 +177,4 @@ for /L %i in (2003,1,2014) DO (
 xcopy test.* combined.*
 python e:\users\maxim\Programming\python\extract_values\extract_values.py combined.shp -g -rl y:\dhi\global\lai_4\combined-v3\dhi_lai4qa_f.tif
 
-python get_unique.py fill-values-search\MOD13-evi.txt -fs x:\MOD13A2\2003\tif-ndvi-qa\,x:\MOD13A2\2004\tif-ndvi-qa\,x:\MOD13A2\2005\tif-ndvi-qa\,x:\MOD13A2\2006\tif-ndvi-qa\,x:\MOD13A2\2007\tif-ndvi-qa\,x:\MOD13A2\2008\tif-ndvi-qa\,x:\MOD13A2\2009\tif-ndvi-qa\,x:\MOD13A2\2010\tif-ndvi-qa\,x:\MOD13A2\2011\tif-ndvi-qa\,x:\MOD13A2\2012\tif-ndvi-qa\,x:\MOD13A2\2013\tif-ndvi-qa\,x:\MOD13A2\2014\tif-ndvi-qa\
+python get_unique.py fill-values-search\MCD15A2-fpar8.txt -fs x:\MCD15A2\2002\tif-fpar\,x:\MCD15A2\2003\tif-fpar\,x:\MCD15A2\2004\tif-fpar\,x:\MCD15A2\2005\tif-fpar\,x:\MCD15A2\2006\tif-fpar\,x:\MCD15A2\2007\tif-fpar\,x:\MCD15A2\2008\tif-fpar\,x:\MCD15A2\2009\tif-fpar\,x:\MCD15A2\2010\tif-fpar\,x:\MCD15A2\2011\tif-fpar\,x:\MCD15A2\2012\tif-fpar\,x:\MCD15A2\2013\tif-fpar\,x:\MCD15A2\2014\tif-fpar\

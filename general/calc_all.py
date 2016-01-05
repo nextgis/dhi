@@ -56,11 +56,11 @@ if not args.type:
 else:
     type = '--type=' + args.type
 
-os.chdir(args.id)
+os.chdir(args.input_folder)
 
 tifs = glob.glob('*.tif')
 for tif in tifs:
     cmd = 'gdal_calc.bat ' + type + '-A ' + tif + ' --outfile=temp.tif ' + tif + ' --calc="A*(A>' + args.val + ') " --NoDataValue=0'
     os.system(cmd)
     
-    shutil.move('temp.tif',args.od + tif)
+    shutil.move('temp.tif',args.output_folder + tif)
