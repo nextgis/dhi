@@ -52,33 +52,41 @@ parser.add_argument('-ps','--pixel_size', help='Output resolution, pixels are sq
 parser.add_argument('-s','--separate', help='Create layerstack if on')
 args = parser.parse_args()
 
-fn = args.output        #filename.vrt or filename.tif
-
-os.chdir(args.input_folder)
-
-tifs = glob.glob('*.tif')
-if len(tifs) == 0:
-        print("Nothing to merge. Exiting.")
-        sys.exit(1)
-        
-list_of_tifs = ' '.join(tifs)
-
-if args.separate: 
-    separate = '-separate'
-else:
-    separate = ''
-
-if args.pixel_size:
-    pix_size = '-ps ' + args.pixel_size + ' ' + args.pixel_size
-else:
-    pix_size = ''
-
-
-if fn.split('.')[-1] == 'vrt': 
-    pix_size = pix_size.replace('ps','tr')
-    cmd = 'gdalbuildvrt' + separate + ' ' + pix_size + ' ' + ' -o ' + fn + ' ' + list_of_tifs
-else:
-    cmd = 'gdal_merge ' + separate + ' ' + pix_size + ' ' + ' -o ' + args.output_folder + fn + ' ' + list_of_tifs
+def sanitize():
+    if not args.input_folder.endswith('\\'): args.input_folder = args.input_folder + '\\'
+    if not args.output_folder.endswith('\\'): args.output_folder = args.output_folder + '\\'
     
-print cmd
-os.system(cmd)
+    return args.input_folder,args.output_folder
+
+if __name__ == '__main__':
+    id,od = sanitize()
+
+    fn = args.output        #filename.vrt or filename.tif
+    os.chdir(id)
+
+    tifs = glob.glob('*.tif')
+    if len(tifs) == 0:
+            print("Nothing to merge. Exiting.")
+            sys.exit(1)
+            
+    list_of_tifs = ' '.join(tifs)
+
+    if args.separate: 
+        separate = '-separate'
+    else:
+        separate = ''
+
+    if args.pixel_size:
+        pix_size = '-ps ' + args.pixel_size + ' ' + args.pixel_size
+    else:
+        pix_size = ''
+
+
+    if fn.split('.')[-1] == 'vrt': 
+        pix_size = pix_size.replace('ps','tr')
+        cmd = 'gdalbuildvrt' + separate + ' ' + pix_size + ' ' + ' -o ' + fn + ' ' + list_of_tifs
+    else:
+        cmd = 'gdal_merge ' + separate + ' ' + pix_size + ' ' + ' -o ' + od + fn + ' ' + list_of_tifs
+        
+    print cmd
+    os.system(cmd)

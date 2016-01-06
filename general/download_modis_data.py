@@ -44,6 +44,14 @@ import os
 import calendar
 import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('year', help='Year', type=int)
+parser.add_argument('numslices', help='Number of time periods per year', type=int)
+parser.add_argument('url', help='Base url where to download from')
+parser.add_argument('output_folder', help='Output folder with HDFs')
+parser.add_argument('-c','--create_hdf_folder', help='If "yes", hdf subfolder will be created for each date, else hdf folder will be created for the whole session')
+args = parser.parse_args()
+
 #Download data
 def download(date):
     print("Downloading started: " + date)
@@ -53,19 +61,16 @@ def download(date):
     os.system(cmd)
     
     print("Downloading completed: " + date)
-    
-if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('year', help='Year', type=int)
-    parser.add_argument('numslices', help='Number of time periods per year', type=int)
-    parser.add_argument('url', help='Base url where to download from')
-    parser.add_argument('output_folder', help='Output folder with HDFs')
-    parser.add_argument('-c','--create_hdf_folder', help='If "yes", hdf subfolder will be created for each date, else hdf folder will be created for the whole session')
-    args = parser.parse_args()
+def sanitize():
+    if not args.output_folder.endswith('\\'): args.output_folder = args.output_folder + '\\'
+    
+    return args.output_folder
+
+if __name__ == '__main__':
+    od = sanitize()
     
     numslices = args.numslices
-    wd = args.output_folder
     
     if numslices == 46:
         dates = '01.01,01.09,01.17,01.25,02.02,02.10,02.18,02.26,03.06,03.14,03.22,03.30,04.07,04.15,04.23,05.01,05.09,05.17,05.25,06.02,06.10,06.18,06.26,07.04,07.12,07.20,07.28,08.05,08.13,08.21,08.29,09.06,09.14,09.22,09.30,10.08,10.16,10.24,11.01,11.09,11.17,11.25,12.03,12.11,12.19,12.27'
@@ -82,8 +87,8 @@ if __name__ == '__main__':
     
     if calendar.isleap(args.year): dates = dates_leap
     
-    if not os.path.exists(wd): os.mkdir(wd)
-    os.chdir(wd)
+    if not os.path.exists(od): os.mkdir(od)
+    os.chdir(od)
     if not args.create_hdf_folder:
         if not os.path.exists('hdf'): os.mkdir("hdf")
         os.chdir("hdf")

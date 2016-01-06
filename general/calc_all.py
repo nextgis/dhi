@@ -51,16 +51,25 @@ parser.add_argument('output_folder', help='Output folder')
 parser.add_argument('-t','--type', help='Int32, Int16, Float64, UInt16, Byte, UInt32, Float32')
 args = parser.parse_args()
 
-if not args.type:
-    type = ''
-else:
-    type = '--type=' + args.type
 
-os.chdir(args.input_folder)
+def sanitize():
+    if not args.input_folder.endswith('\\'): args.input_folder = args.input_folder + '\\'
+    if not args.output_folder.endswith('\\'): args.output_folder = args.output_folder + '\\'
+    return args.input_folder,args.output_folder
 
-tifs = glob.glob('*.tif')
-for tif in tifs:
-    cmd = 'gdal_calc.bat ' + type + '-A ' + tif + ' --outfile=temp.tif ' + tif + ' --calc="A*(A>' + args.val + ') " --NoDataValue=0'
-    os.system(cmd)
-    
-    shutil.move('temp.tif',args.output_folder + tif)
+if __name__ == '__main__':
+    id,od = sanitize()
+
+    if not args.type:
+        type = ''
+    else:
+        type = '--type=' + args.type
+
+    os.chdir(id)
+
+    tifs = glob.glob('*.tif')
+    for tif in tifs:
+        cmd = 'gdal_calc.bat ' + type + '-A ' + tif + ' --outfile=temp.tif ' + tif + ' --calc="A*(A>' + args.val + ') " --NoDataValue=0'
+        os.system(cmd)
+        
+        shutil.move('temp.tif',od + tif)

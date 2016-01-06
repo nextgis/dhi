@@ -52,8 +52,14 @@ parser.add_argument('-ps','--pixel_size', help='Output resolution, pixels are sq
 parser.add_argument('-e','--epsg', help='EPSG code for output file, EPSG:4326 if empty, sinusoidal (no resampling) if SIN')
 args = parser.parse_args()
     
+def sanitize():
+    if not args.input_folder.endswith('\\'): args.input_folder = args.input_folder + '\\'
+    if not args.output_folder.endswith('\\'): args.output_folder = args.output_folder + '\\'
+    
+    return args.input_folder,args.output_folder
+
 if __name__ == '__main__':
-    id = args.input_folder
+    id,od = sanitize()
     script_path = os.getcwd() + '\\'
     
     os.chdir(id)
@@ -78,13 +84,13 @@ if __name__ == '__main__':
             cmd = 'python ' + script_path + 'merge_all.py ' + date + '.vrt '  + id + date + '\\ ' + id + date + '\\ '
             os.system(cmd)
         
-        if not os.path.exists(args.output_folder + date + '.tif') and os.path.exists(id + date + '\\' + date + '.vrt'):
+        if not os.path.exists(od + date + '.tif') and os.path.exists(id + date + '\\' + date + '.vrt'):
             if args.epsg != 'SIN':
-                cmd = 'gdalwarp ' + epsg + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + args.output_folder + date + '.tif'
+                cmd = 'gdalwarp ' + epsg + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + od + date + '.tif'
             else:
                 if args.pixel_size:
-                    cmd = 'gdalwarp ' + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + args.output_folder + date + '.tif'
+                    cmd = 'gdalwarp ' + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + od + date + '.tif'
                 else:
-                    cmd = 'gdal_translate ' + id + date + '\\' + date + '.vrt ' + args.output_folder + date + '.tif'
+                    cmd = 'gdal_translate ' + id + date + '\\' + date + '.vrt ' + od + date + '.tif'
             os.system(cmd)
         

@@ -49,37 +49,45 @@ parser.add_argument('output_folder', help='Output folder')
 parser.add_argument('colortable', help='Path to colortable')
 args = parser.parse_args()
 
-os.chdir(args.input_folder)
+def sanitize():
+    if not args.input_folder.endswith('\\'): args.input_folder = args.input_folder + '\\'
+    if not args.output_folder.endswith('\\'): args.output_folder = args.output_folder + '\\'
+    return args.input_folder,args.output_folder
 
-tifs = glob.glob('*.tif')
-for f_in_name in tifs:
-    f_vrt_name = f_in_name.replace(".tif",".vrt")
-    f_vrt_name2 = f_in_name.replace(".tif","_2.vrt")
-    cmd = "gdal_translate -of VRT " + f_in_name + " " + f_vrt_name
-    os.system(cmd)
-    
-    f_vrt_in = open(f_vrt_name,'rb')
-    f_vrt_out = open(f_vrt_name2,'wb')
-    f_clrs = open(args.colortable,'rb')
-    
-    for str in f_vrt_in:
-        if "<ColorInterp>Gray" in str or "<ColorInterp>Palette" in str:
-            f_vrt_out.write("<ColorInterp>Palette</ColorInterp>\n")
-            for clr in f_clrs:
-                f_vrt_out.write(clr)
-        elif "ColorTable" in str or "Entry" in str:
-            continue #do nothing
-        else:
-            f_vrt_out.write(str)
-    
-    f_vrt_out.write("\n")
-    f_vrt_out.close()
-    f_vrt_in.close()
-    
-    cmd = "gdal_translate " + f_vrt_name2 + " temp.tif"
-    os.system(cmd)
-    os.remove(f_in_name)
-    shutil.move('temp.tif',args.output_folder + f_in_name)
-    os.remove(f_vrt_name)
-    os.remove(f_vrt_name2)
-    
+if __name__ == '__main__':
+    id,od = sanitize()
+
+    os.chdir(id)
+
+    tifs = glob.glob('*.tif')
+    for f_in_name in tifs:
+        f_vrt_name = f_in_name.replace(".tif",".vrt")
+        f_vrt_name2 = f_in_name.replace(".tif","_2.vrt")
+        cmd = "gdal_translate -of VRT " + f_in_name + " " + f_vrt_name
+        os.system(cmd)
+        
+        f_vrt_in = open(f_vrt_name,'rb')
+        f_vrt_out = open(f_vrt_name2,'wb')
+        f_clrs = open(args.colortable,'rb')
+        
+        for str in f_vrt_in:
+            if "<ColorInterp>Gray" in str or "<ColorInterp>Palette" in str:
+                f_vrt_out.write("<ColorInterp>Palette</ColorInterp>\n")
+                for clr in f_clrs:
+                    f_vrt_out.write(clr)
+            elif "ColorTable" in str or "Entry" in str:
+                continue #do nothing
+            else:
+                f_vrt_out.write(str)
+        
+        f_vrt_out.write("\n")
+        f_vrt_out.close()
+        f_vrt_in.close()
+        
+        cmd = "gdal_translate " + f_vrt_name2 + " temp.tif"
+        os.system(cmd)
+        os.remove(f_in_name)
+        shutil.move('temp.tif',od + f_in_name)
+        os.remove(f_vrt_name)
+        os.remove(f_vrt_name2)
+        

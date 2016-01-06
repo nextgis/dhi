@@ -9,12 +9,12 @@
 # More: http://github.com/nextgis/dhi
 #
 # Usage: 
-#      hdf2tif.py dataset input_folder output_folder
+#      hdf2tif.py [-h] [--recurse] dataset input_folder
 #      where:
 #           -h              show this help message and exit
 #           dataset         subdataset code (use gdalinfo to get it)
 #           input_folder    input folder with HDFs
-#           output_folder   output folder with TIFs
+#           recurse         enter every subfolder of input folder
 # Examples:
 #      python hdf2tif.py MOD44B_250m_GRID:Percent_Tree_Cover y:\source\MOD44B\2000.03.05\hdf\ y:\source\MOD44B\2000.03.05\tif_vcf1\
 #
@@ -43,27 +43,33 @@ import os
 from progressbar import *
 import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('dataset', help='Subdataset code (use gdalinfo to get it)')
+parser.add_argument('input_folder', help='Input folder with HDFs')
+parser.add_argument('--recurse', action="store_true", help='Walk in directories and use their name as output name')
+args = parser.parse_args()
+
 def resample(hdf,f_out_name):
     cmd = 'gdal_translate -q ' + pref + '\"' + hdf + '\":' + dataset.split(':')[0] + ':' + '\"' + dataset.split(':')[1] + '\"' + ' ' + f_out_name
     os.system(cmd)
     #print(cmd)
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('dataset', help='Subdataset code (use gdalinfo to get it)')
-    parser.add_argument('input_folder', help='Output folder with HDFs')
-    #parser.add_argument('output_folder', help='Output folder with HDFs')
-    parser.add_argument('--recurse', action="store_true", help='Walk in directories and use their name as output name')
-    args = parser.parse_args()
+def sanitize():
+    if not args.input_folder.endswith('\\'): args.input_folder = args.input_folder + '\\'
     
+    return args.input_folder
+
+if __name__ == '__main__':
+    id = sanitize()
+
     dataset = args.dataset   #MOD44B_250m_GRID:Percent_Tree_Cover - example
     folders = []
     if args.recurse: 
-        subdirs = next(os.walk(args.input_folder))[1]
+        subdirs = next(os.walk(id))[1]
         for folder in subdirs:
-            folders.append(os.path.join(args.input_folder, folder))
+            folders.append(os.path.join(id, folder))
     else:
-        folders = [args.input_folder]
+        folders = [id]
     
     pref = 'HDF4_EOS:EOS_GRID:'
     

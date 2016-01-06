@@ -52,56 +52,64 @@ parser.add_argument('output_folder', help='Where to store the result')
 parser.add_argument('-s', '--suffix', help='suffix to end to resulting file name')
 args = parser.parse_args()
 
-#prepare environment
-gisbase = os.environ['GISBASE'] = "c:/tools/NextGIS_QGIS/apps/grass/grass-6.4.4/"
-gisdbase = os.environ['GISDBASE'] = "e:/users/maxim/thematic/dhi/"
-location = "dhi_grass"
-mapset   = "PERMANENT"
-
-sys.path.append(os.path.join(gisbase, "etc", "python"))
- 
-import grass.script as grass
-import grass.script.setup as gsetup
-gsetup.init(gisbase, gisdbase, location, mapset)
-
-year = args.year
-od = args.output_folder
-prefix = 'dhi'
-if not args.suffix: args.suffix = ''
-os.chdir(args.input_folder)
-fn_out = prefix + '_' + year + '_' + args.suffix + '.tif'
-
-t = time.time()
-
-#for f in glob.glob('*.tif'):
-#    grass.run_command('r.in.gdal', input=f, output=f.replace('.tif',''))
+def sanitize():
+    if not args.input_folder.endswith('\\'): args.input_folder = args.input_folder + '\\'
+    if not args.output_folder.endswith('\\'): args.output_folder = args.output_folder + '\\'
     
-t_import = time.time() - t
+    return args.input_folder,args.output_folder
 
-#for f in glob.glob('*.tif'):
-#    grass.run_command('r.null', map=f.replace('.tif',''), setnull="249,250,251,252,253,254,255")
-#    
-t_nodata = time.time() - t - t_import
+if __name__ == '__main__':
+    id,od = sanitize()
+    
+    #prepare environment
+    gisbase = os.environ['GISBASE'] = "c:/tools/NextGIS_QGIS/apps/grass/grass-6.4.4/"
+    gisdbase = os.environ['GISDBASE'] = "e:/users/maxim/thematic/dhi/"
+    location = "dhi_grass"
+    mapset   = "PERMANENT"
 
-result = ''
-p = grass.pipe_command('g.mlist', type = 'rast', quiet=True, pattern=year + '*')
-for line in p.stdout:
-    result = result + ',' + line.replace('\n','')
+    sys.path.append(os.path.join(gisbase, "etc", "python"))
+     
+    import grass.script as grass
+    import grass.script.setup as gsetup
+    gsetup.init(gisbase, gisdbase, location, mapset)
 
-input_rast_list = result.strip(',')
+    year = args.year
+    prefix = 'dhi'
+    if not args.suffix: args.suffix = ''
+    os.chdir(id)
+    fn_out = prefix + '_' + year + '_' + args.suffix + '.tif'
 
-grass.run_command('r.series', input=input_rast_list, output='dh1_' + year + ',dh2_' + year + ',ave_' + year + ',std_' + year, method='sum,minimum,average,stddev')
-grass.mapcalc('dh3_' + year + ' = std_' + year + '/ave_' + year)
-t_calc = time.time() - t - t_import - t_nodata
+    t = time.time()
 
-grass.run_command('i.group', group='rgb_group_' + year, input='dh1_' + year + ',dh2_' + year + ',dh3_' + year)
-grass.run_command('r.out.gdal', input='rgb_group_' + year, output=fn_out, type='Float32', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES')
-shutil.move(fn_out,od + fn_out)
-shutil.move(fn_out.replace('.tif','.tfw'),od + fn_out.replace('.tif','.tfw'))
-shutil.move(fn_out + '.aux.xml',od + fn_out + '.aux.xml')
-cmd = "gdal_edit -a_srs \"EPSG:4326\" " + od + fn_out
-os.system(cmd)
+    #for f in glob.glob('*.tif'):
+    #    grass.run_command('r.in.gdal', input=f, output=f.replace('.tif',''))
+        
+    t_import = time.time() - t
 
-t_export = time.time() - t - t_import - t_nodata - t_calc
+    #for f in glob.glob('*.tif'):
+    #    grass.run_command('r.null', map=f.replace('.tif',''), setnull="249,250,251,252,253,254,255")
+    #    
+    t_nodata = time.time() - t - t_import
 
-print "Import: " + str(round(t_import, 4)) + ", Nodata: " + str(round(t_nodata, 4)) + ", Calculations: " + str(round(t_calc, 4)) + ", Export: " + str(round(t_export, 4))
+    result = ''
+    p = grass.pipe_command('g.mlist', type = 'rast', quiet=True, pattern=year + '*')
+    for line in p.stdout:
+        result = result + ',' + line.replace('\n','')
+
+    input_rast_list = result.strip(',')
+
+    grass.run_command('r.series', input=input_rast_list, output='dh1_' + year + ',dh2_' + year + ',ave_' + year + ',std_' + year, method='sum,minimum,average,stddev')
+    grass.mapcalc('dh3_' + year + ' = std_' + year + '/ave_' + year)
+    t_calc = time.time() - t - t_import - t_nodata
+
+    grass.run_command('i.group', group='rgb_group_' + year, input='dh1_' + year + ',dh2_' + year + ',dh3_' + year)
+    grass.run_command('r.out.gdal', input='rgb_group_' + year, output=fn_out, type='Float32', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES')
+    shutil.move(fn_out,od + fn_out)
+    shutil.move(fn_out.replace('.tif','.tfw'),od + fn_out.replace('.tif','.tfw'))
+    shutil.move(fn_out + '.aux.xml',od + fn_out + '.aux.xml')
+    cmd = "gdal_edit -a_srs \"EPSG:4326\" " + od + fn_out
+    os.system(cmd)
+
+    t_export = time.time() - t - t_import - t_nodata - t_calc
+
+    print "Import: " + str(round(t_import, 4)) + ", Nodata: " + str(round(t_nodata, 4)) + ", Calculations: " + str(round(t_calc, 4)) + ", Export: " + str(round(t_export, 4))

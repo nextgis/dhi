@@ -50,25 +50,30 @@ parser.add_argument('output_dir', help='Directory where patched rasters will be 
 parser.add_argument('-s','--skip_masks', help='Skip creation of binary masks if they exist')
 args = parser.parse_args()
 
-wd = os.getcwd()
+def sanitize():
+    if not args.input_dir_qa.endswith('\\'): args.input_dir_qa = args.input_dir_qa + '\\'
+    if not args.input_dir_rs.endswith('\\'): args.input_dir_rs = args.input_dir_rs + '\\'
+    
+    return args.input_dir_qa,args.input_dir_rs,output_dir
 
-id_qa = args.input_dir_qa
-id_rs = args.input_dir_rs
-od = args.output_dir
+if __name__ == '__main__':
+    id_qa,id_rs,od = sanitize()
+    
+    wd = os.getcwd()
 
-os.chdir(id_qa)
+    os.chdir(id_qa)
 
-tifs = glob.glob('*.tif')
+    tifs = glob.glob('*.tif')
 
-for tif in tifs:
-    if '_b.tif' not in tif:
-        if not args.skip_masks:
-            #cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<50)" --NoDataValue=0'
-            cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<4097) + 1*(logical_and(A>=18433,A<=19946)) + 1*(logical_and(A>=34817,A<=36334))+ 1*(logical_and(A>=51201,A<=52721))" --NoDataValue=0'
+    for tif in tifs:
+        if '_b.tif' not in tif:
+            if not args.skip_masks:
+                #cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<50)" --NoDataValue=0'
+                cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<4097) + 1*(logical_and(A>=18433,A<=19946)) + 1*(logical_and(A>=34817,A<=36334))+ 1*(logical_and(A>=51201,A<=52721))" --NoDataValue=0'
+                print cmd
+                os.system(cmd)
+                
+            cmd = 'gdal_calc.bat --overwrite -A ' + tif.replace('.tif','_b.tif') + ' -B ' + id_rs + tif + ' --outfile=' + od + tif + ' --calc="A*B" --NoDataValue=0'
             print cmd
             os.system(cmd)
             
-        cmd = 'gdal_calc.bat --overwrite -A ' + tif.replace('.tif','_b.tif') + ' -B ' + id_rs + tif + ' --outfile=' + od + tif + ' --calc="A*B" --NoDataValue=0'
-        print cmd
-        os.system(cmd)
-        
