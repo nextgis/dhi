@@ -49,7 +49,7 @@ parser.add_argument('dataset', help='SDS name of the dataset to process')  #'MOD
 parser.add_argument('input_folder', help='Input folder with HDFs (this is folder of folders)')
 parser.add_argument('output_folder', help='Where to store the results')
 parser.add_argument('-ps','--pixel_size', help='Output resolution, pixels are square')
-parser.add_argument('-e','--epsg', help='EPSG code for output file, EPSG:4326 if empty')
+parser.add_argument('-e','--epsg', help='EPSG code for output file, EPSG:4326 if empty, sinusoidal (no resampling) if SIN')
 args = parser.parse_args()
     
 if __name__ == '__main__':
@@ -74,11 +74,17 @@ if __name__ == '__main__':
         #print(cmd)
         os.system(cmd)
         
-        if not os.path.exists(date + '.vrt'):
+        if not os.path.exists(id + date + '\\' + date + '.vrt'):
             cmd = 'python ' + script_path + 'merge_all.py ' + date + '.vrt '  + id + date + '\\ ' + id + date + '\\ '
             os.system(cmd)
         
         if not os.path.exists(args.output_folder + date + '.tif') and os.path.exists(id + date + '\\' + date + '.vrt'):
-            cmd = 'gdalwarp ' + epsg + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + args.output_folder + date + '.tif'
+            if args.epsg != 'SIN':
+                cmd = 'gdalwarp ' + epsg + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + args.output_folder + date + '.tif'
+            else:
+                if args.pixel_size:
+                    cmd = 'gdalwarp ' + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + args.output_folder + date + '.tif'
+                else:
+                    cmd = 'gdal_translate ' + id + date + '\\' + date + '.vrt ' + args.output_folder + date + '.tif'
             os.system(cmd)
         
