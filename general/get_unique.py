@@ -48,7 +48,7 @@ from progressbar import *
 parser = argparse.ArgumentParser()
 parser.add_argument('output', help='Output file')
 group = parser.add_mutually_exclusive_group(required=True)
-group.add_argument('-rs','--rasters', help='path(s) to raster, separate by comma if several')
+group.add_argument('-rs','--rasters', help='full raster path(s), separate by comma if several')
 group.add_argument('-fs','--folders', help='path(s) to folders with raster, separate by comma if several')
 
 args = parser.parse_args()

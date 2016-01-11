@@ -9,7 +9,7 @@
 # More: http://github.com/nextgis/dhi
 #
 # Usage: 
-#      prepare_data.py [-h] [-ps PIXEL_SIZE] [-e EPSG] dataset input_folder output_folder
+#      prepare_data.py [-h] [-ps PIXEL_SIZE] [-e EPSG] [-o] dataset input_folder output_folder
 #      where:
 #           -h              show this help message and exit
 #           dataset         SDS name of the dataset to process
@@ -50,6 +50,7 @@ parser.add_argument('input_folder', help='Input folder with HDFs (this is folder
 parser.add_argument('output_folder', help='Where to store the results')
 parser.add_argument('-ps','--pixel_size', help='Output resolution, pixels are square')
 parser.add_argument('-e','--epsg', help='EPSG code for output file, EPSG:4326 if empty, sinusoidal (no resampling) if SIN')
+parser.add_argument('-o','--overwrite', action="store_true", help='Overwrite all intermediary and resulting files')
 args = parser.parse_args()
     
 def sanitize():
@@ -65,26 +66,26 @@ if __name__ == '__main__':
     os.chdir(id)
     dates = next(os.walk('.'))[1]
     
-    if args.epsg:
-        epsg = '-t_srs EPSG:' + args.epsg
-    else:
-        epsg = '-t_srs EPSG:4326'
+    pixel_size = ''
+    epsg = '-t_srs EPSG:4326'
+    overwrite = ''
     
-    if args.pixel_size:
-        pixel_size = ' -tr ' + args.pixel_size + ' ' + args.pixel_size
-    else:
-        pixel_size = ''
+    if args.epsg: epsg = '-t_srs EPSG:' + args.epsg
+    
+    if args.pixel_size: pixel_size = ' -tr ' + args.pixel_size + ' ' + args.pixel_size
+        
+    if args.overwrite: overwrite = '-o '
     
     for date in dates:
-        cmd = 'python ' + script_path + 'hdf2tif.py ' + args.dataset.split(':')[0] + ':' + '\"' + args.dataset.split(':')[1] + '\" ' + id + date + '\\'
-        #print(cmd)
+        cmd = 'python ' + script_path + 'hdf2tif.py ' + overwrite + args.dataset.split(':')[0] + ':' + '\"' + args.dataset.split(':')[1] + '\" ' + id + date + '\\'
+        print(cmd)
         os.system(cmd)
         
-        if not os.path.exists(id + date + '\\' + date + '.vrt'):
+        if not os.path.exists(id + date + '\\' + date + '.vrt') or args.overwrite:
             cmd = 'python ' + script_path + 'merge_all.py ' + date + '.vrt '  + id + date + '\\ ' + id + date + '\\ '
             os.system(cmd)
         
-        if not os.path.exists(od + date + '.tif') and os.path.exists(id + date + '\\' + date + '.vrt'):
+        if not os.path.exists(od + date + '.tif') and os.path.exists(id + date + '\\' + date + '.vrt')  or args.overwrite:
             if args.epsg != 'SIN':
                 cmd = 'gdalwarp ' + epsg + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + od + date + '.tif'
             else:

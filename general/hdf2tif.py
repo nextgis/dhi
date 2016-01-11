@@ -9,12 +9,13 @@
 # More: http://github.com/nextgis/dhi
 #
 # Usage: 
-#      hdf2tif.py [-h] [--recurse] dataset input_folder
+#      hdf2tif.py [-h] [--recurse] [-o] dataset input_folder
 #      where:
 #           -h              show this help message and exit
 #           dataset         subdataset code (use gdalinfo to get it)
 #           input_folder    input folder with HDFs
-#           recurse         enter every subfolder of input folder
+#           -r,recurse         enter every subfolder of input folder
+#           -o,overwrite       overwrite all existing files
 # Examples:
 #      python hdf2tif.py MOD44B_250m_GRID:Percent_Tree_Cover y:\source\MOD44B\2000.03.05\hdf\ y:\source\MOD44B\2000.03.05\tif_vcf1\
 #
@@ -46,7 +47,8 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('dataset', help='Subdataset code (use gdalinfo to get it)')
 parser.add_argument('input_folder', help='Input folder with HDFs')
-parser.add_argument('--recurse', action="store_true", help='Walk in directories and use their name as output name')
+parser.add_argument('-r','--recurse', action="store_true", help='Walk in directories and use their name as output name')
+parser.add_argument('-o','--overwrite', action="store_true", help='Overwrite all intermediary and resulting files')
 args = parser.parse_args()
 
 def resample(hdf,f_out_name):
@@ -88,7 +90,7 @@ if __name__ == '__main__':
         for hdf in hdfs:
             #f_out_name = hdf + ".tif"
             f_out_name = folder + '\\' + hdf[17:23] + ".tif"
-            if not os.path.exists(f_out_name):
+            if not os.path.exists(f_out_name) or args.overwrite:
                 resample(hdf,f_out_name)
                 pbar.update(pbar.currval+1)
             

@@ -50,9 +50,10 @@ python prepare_data.py MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD1
 python prepare_data.py "MOD_Grid_MOD15A2:FparLai_QC" x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\qa\ -ps 0.0083
 python prepare_data.py "MODIS_Grid_16DAY_250m_500m_VI:250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi-sin\ -ps 250
 
-for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:Lai_1km x:\MCD15A2\%i\hdf\ x:\MCD15A2\%i\tif-lai\ -ps 0.0083
+for /L %i in (2002,1,2015) DO python prepare_data.py -o MOD_Grid_MOD15A2:Fpar_1km x:\MCD15A2\%i\hdf\ x:\MCD15A2\%i\tif-fpar-sin\ -e SIN
+for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:Lai_1km x:\MCD15A2\%i\hdf\ x:\MCD15A2\%i\tif-lai-sin\ -e SIN
 for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:FparLai_QC x:\MCD15A3\%i\hdf\ x:\MCD15A2\%i\qa\ -ps 0.0083
-for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Gpp_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\tif-gpp\ -ps 0.0083
+for /L %i in (2000,1,2014) DO python prepare_data.py -o MOD_Grid_MOD17A2:Gpp_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\tif-gpp-sin\ -e SIN
 for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Psn_QC_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\qa\ -ps 0.0083
 for /L %i in (2001,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days NDVI" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\tif-ndvi\ -ps 0.00416
 for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days NDVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-ndvi\ -ps 0.0083
@@ -180,3 +181,17 @@ python e:\users\maxim\Programming\python\extract_values\extract_values.py combin
 python get_unique.py fill-values-search\MCD15A2-fpar8.txt -fs x:\MCD15A2\2002\tif-fpar\,x:\MCD15A2\2003\tif-fpar\,x:\MCD15A2\2004\tif-fpar\,x:\MCD15A2\2005\tif-fpar\,x:\MCD15A2\2006\tif-fpar\,x:\MCD15A2\2007\tif-fpar\,x:\MCD15A2\2008\tif-fpar\,x:\MCD15A2\2009\tif-fpar\,x:\MCD15A2\2010\tif-fpar\,x:\MCD15A2\2011\tif-fpar\,x:\MCD15A2\2012\tif-fpar\,x:\MCD15A2\2013\tif-fpar\,x:\MCD15A2\2014\tif-fpar\
 
 for /L %i in (2004,1,2014) DO python get_unique.py %i.txt -fs x:\MCD15A2\%i\tif-fpar\
+
+SET prod=MCD15A2
+SET fldr=qa-sin
+for %i in (2002,2003,2005,2006,2007,2009,2010,2011,2013,2014,2015) DO (
+    cd /d x:\%prod%\%i\%fldr%\
+    python e:\users\maxim\thematic\dhi\scripts\general\patch_raster.py %i.01.01.tif,%i.01.09.tif,%i.01.17.tif,%i.01.25.tif,%i.02.02.tif,%i.02.10.tif,%i.02.18.tif,%i.02.26.tif,%i.10.16.tif,%i.10.24.tif,%i.11.01.tif,%i.11.09.tif,%i.11.17.tif,%i.11.25.tif,%i.12.03.tif,%i.12.11.tif,%i.12.19.tif,%i.12.27.tif %i.08.29.tif
+)
+
+SET prod=MCD15A2
+SET fldr=qa-sin
+for %i in (2004,2008,2012) DO (
+    cd /d x:\%prod%\%i\%fldr%\
+    python e:\users\maxim\thematic\dhi\scripts\general\patch_raster.py %i.01.01.tif,%i.01.09.tif,%i.01.17.tif,%i.01.25.tif,%i.02.02.tif,%i.02.10.tif,%i.02.18.tif,%i.02.26.tif,%i.10.15.tif,%i.10.23.tif,%i.10.31.tif,%i.11.08.tif,%i.11.16.tif,%i.11.24.tif,%i.12.02.tif,%i.12.10.tif,%i.12.18.tif,%i.12.26.tif %i.08.28.tif
+)

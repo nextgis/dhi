@@ -42,6 +42,12 @@ import sys
 import shutil
 import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('input', help='Input GeoTIFF')
+parser.add_argument('output', help='Output GeoTIFF')
+parser.add_argument('colortable', help='Path to colortable')
+args = parser.parse_args()
+
 def attach_color_table(f_in_name,f_out_name,f_clrs_name):
     f_vrt_name = f_in_name.replace(".tif",".vrt")
     f_vrt_name2 = f_in_name.replace(".tif","_2.vrt")
@@ -71,11 +77,6 @@ def attach_color_table(f_in_name,f_out_name,f_clrs_name):
     os.remove(f_vrt_name2)
     
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('input', help='Input GeoTIFF')
-    parser.add_argument('output', help='Output GeoTIFF')
-    parser.add_argument('colortable', help='Path to colortable')
-    args = parser.parse_args()
     
     #attach color table
     attach_color_table(args.input,args.output,args.colortable)
