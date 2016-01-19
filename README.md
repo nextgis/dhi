@@ -1,5 +1,6 @@
 # dhi
 Collection of scripts to create DHI data
 
-general - general scripts to create and manipulate data
-smoothing - scripts to run smoothing
+GENERAL - general scripts to create and manipulate data
+
+SMOOTHING - scripts to run smoothing processing on multiple cores
