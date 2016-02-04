@@ -81,8 +81,8 @@ if __name__ == '__main__':
 
     t = time.time()
 
-    #for f in glob.glob('*.tif'):
-    #    grass.run_command('r.in.gdal', input=f, output=f.replace('.tif',''))
+    for f in glob.glob('*.tif'):
+        grass.run_command('r.in.gdal', input=f, output=f.replace('.tif',''))
         
     t_import = time.time() - t
 

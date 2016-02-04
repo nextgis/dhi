@@ -64,7 +64,7 @@ if __name__ == '__main__':
         id = sanitize()
         inputs = glob.glob(id + '*.tif')
     else:
-        inputs = args.inputs.split(',')
+        inputs = args.input_rasters.split(',')
     
     #create mask from template
     print('Preparing mask from ' + args.template)

@@ -56,8 +56,8 @@ for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:FparLai_QC
 for /L %i in (2000,1,2014) DO python prepare_data.py -o MOD_Grid_MOD17A2:Gpp_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\tif-gpp-sin\ -e SIN
 for /L %i in (2000,1,2014) DO python prepare_data.py MOD_Grid_MOD17A2:Psn_QC_1km x:\MOD17A2\%i\hdf\ x:\MOD17A2\%i\qa\ -ps 0.0083
 for /L %i in (2001,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days NDVI" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\tif-ndvi\ -ps 0.00416
-for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days NDVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-ndvi\ -ps 0.0083
-for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days EVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-evi\ -ps 0.0083
+for /L %i in (2003,1,2014) DO python prepare_data.py -o "MODIS_Grid_16DAY_1km_VI:1 km 16 days NDVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-ndvi\ -e SIN
+for /L %i in (2003,1,2014) DO python prepare_data.py -o "MODIS_Grid_16DAY_1km_VI:1 km 16 days EVI" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\tif-evi\ -e SIN
 for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_1km_VI:1 km 16 days VI Quality" x:\MOD13A2\%i\hdf\ x:\MOD13A2\%i\qa\ -ps 0.0083
 for /L %i in (2003,1,2014) DO python prepare_data.py "MODIS_Grid_16DAY_500m_VI:500m 16 days VI Quality" x:\MOD13A1\%i\hdf\ x:\MOD13A1\%i\qa\ -ps 0.00416
 
@@ -94,6 +94,7 @@ for %i in (*.tif) DO (
 )
 
 python qa_all.py x:\MCD15A2\2003\tif-fpar\qa\ x:\MCD15A2\2003\tif-fpar\ x:\MCD15A2\2003\tif-fpar-qa\
+python qa_all.py x:\MCD15A2\2002\qa\ x:\MCD15A2\2002\tif-fpar-src\ x:\MCD15A2\2002\tif-fpar-qa\
 for /L %i in (2003,1,2014) DO python qa_all.py x:\MCD15A2\%i\qa\ x:\MCD15A2\%i\tif-fpar\ x:\MCD15A2\%i\tif-fpar-qa\
 for /L %i in (2003,1,2014) DO python qa_all.py x:\MCD15A2\%i\qa\ x:\MCD15A2\%i\tif-lai\ x:\MCD15A2\%i\tif-lai-qa\
 for /L %i in (2003,1,2014) DO python qa_all.py x:\MCD15A3\%i\qa\ x:\MCD15A3\%i\tif-lai\ x:\MCD15A3\%i\tif-lai-qa\
@@ -183,15 +184,18 @@ python get_unique.py fill-values-search\MCD15A2-fpar8.txt -fs x:\MCD15A2\2002\ti
 for /L %i in (2004,1,2014) DO python get_unique.py %i.txt -fs x:\MCD15A2\%i\tif-fpar\
 
 SET prod=MCD15A2
-SET fldr=qa-sin
+SET fldr=qa
 for %i in (2002,2003,2005,2006,2007,2009,2010,2011,2013,2014,2015) DO (
-    cd /d x:\%prod%\%i\%fldr%\
-    python e:\users\maxim\thematic\dhi\scripts\general\patch_raster.py %i.01.01.tif,%i.01.09.tif,%i.01.17.tif,%i.01.25.tif,%i.02.02.tif,%i.02.10.tif,%i.02.18.tif,%i.02.26.tif,%i.10.16.tif,%i.10.24.tif,%i.11.01.tif,%i.11.09.tif,%i.11.17.tif,%i.11.25.tif,%i.12.03.tif,%i.12.11.tif,%i.12.19.tif,%i.12.27.tif %i.08.29.tif
+    cd /d x:\dhi2\%prod%\%i\%fldr%\
+    python e:\users\maxim\thematic\dhi\scripts\general\patch_raster.py -rs %i.01.01.tif,%i.01.09.tif,%i.01.17.tif,%i.01.25.tif,%i.02.02.tif,%i.02.10.tif,%i.02.18.tif,%i.02.26.tif,%i.10.16.tif,%i.10.24.tif,%i.11.01.tif,%i.11.09.tif,%i.11.17.tif,%i.11.25.tif,%i.12.03.tif,%i.12.11.tif,%i.12.19.tif,%i.12.27.tif %i.08.29.tif 147
 )
 
 SET prod=MCD15A2
-SET fldr=qa-sin
+SET fldr=qa
 for %i in (2004,2008,2012) DO (
-    cd /d x:\%prod%\%i\%fldr%\
-    python e:\users\maxim\thematic\dhi\scripts\general\patch_raster.py %i.01.01.tif,%i.01.09.tif,%i.01.17.tif,%i.01.25.tif,%i.02.02.tif,%i.02.10.tif,%i.02.18.tif,%i.02.26.tif,%i.10.15.tif,%i.10.23.tif,%i.10.31.tif,%i.11.08.tif,%i.11.16.tif,%i.11.24.tif,%i.12.02.tif,%i.12.10.tif,%i.12.18.tif,%i.12.26.tif %i.08.28.tif
+    cd /d x:\dhi2\%prod%\%i\%fldr%\
+    python e:\users\maxim\thematic\dhi\scripts\general\patch_raster.py -rs %i.01.01.tif,%i.01.09.tif,%i.01.17.tif,%i.01.25.tif,%i.02.02.tif,%i.02.10.tif,%i.02.18.tif,%i.02.26.tif,%i.10.15.tif,%i.10.23.tif,%i.10.31.tif,%i.11.08.tif,%i.11.16.tif,%i.11.24.tif,%i.12.02.tif,%i.12.10.tif,%i.12.18.tif,%i.12.26.tif %i.08.28.tif 147
 )
+
+for /L %i in (2004,1,2014) DO python calc_all2.py x:\dhi2\MCD15A2\%i\tif-fpar\ x:\dhi2\MCD15A2\%i\tif-fpar-calc\
+for /L %i in (2004,1,2014) DO python qa_all.py -s x:\dhi2\MCD15A2\%i\qa\ x:\dhi2\MCD15A2\%i\tif-lai-calc\ x:\dhi2\MCD15A2\%i\tif-lai-qa\

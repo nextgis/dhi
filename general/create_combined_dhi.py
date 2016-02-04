@@ -18,7 +18,7 @@
 #           suffix          suffix to end to resulting file name
 #           product         product code used in folder name
 # Example:
-#      python create_combined_dhi.py -s fpar8 x:\MCD15A2\ x:\MCD15A2\combined\fpar8\ y:\dhi\global\fpar_8\combined-v2\ fpar
+#      python create_combined_dhi.py -s fpar8 x:\MCD15A2\ -of1 x:\MCD15A2\combined\fpar8\ y:\dhi\global\fpar_8\combined-v2\ fpar
 #
 # Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
 #

@@ -15,7 +15,8 @@
 #           input_dir_qa    directory with input QA rasters
 #           input_dir_rs    directory with input rasters to apply QA to
 #           output_dir      directory where patched rasters will be stored
-#           -s   Skip creation of binary masks if they exist to reuse them (yes/no)
+#           -s              skip creation of binary masks if they exist to reuse them (yes/no)
+#           -o,overwrite    overwrite output files
 # Example:
 #      python qa_all.py -iq x:\MOD17A2\2003\tif-gpp\qa\ -ir x:\MOD17A2\2003\tif-gpp\ -o x:\MOD17A2\2003\tif-gpp-qa\ -s yes
 #
@@ -47,14 +48,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument('input_dir_qa', help='Directory with input QA rasters')
 parser.add_argument('input_dir_rs', help='Directory with input rasters to apply QA to')
 parser.add_argument('output_dir', help='Directory where patched rasters will be stored')
-parser.add_argument('-s','--skip_masks', help='Skip creation of binary masks if they exist')
+parser.add_argument('-s','--skip_masks', action="store_true", help='Skip creation of binary masks if they exist')
+parser.add_argument('-o','--overwrite', action="store_true", help='Overwrite outputs')
 args = parser.parse_args()
 
 def sanitize():
     if not args.input_dir_qa.endswith('\\'): args.input_dir_qa = args.input_dir_qa + '\\'
     if not args.input_dir_rs.endswith('\\'): args.input_dir_rs = args.input_dir_rs + '\\'
+    if not args.output_dir.endswith('\\'): args.output_dir = args.output_dir + '\\'
     
-    return args.input_dir_qa,args.input_dir_rs,output_dir
+    return args.input_dir_qa,args.input_dir_rs,args.output_dir
 
 if __name__ == '__main__':
     id_qa,id_rs,od = sanitize()
@@ -69,11 +72,15 @@ if __name__ == '__main__':
         if '_b.tif' not in tif:
             if not args.skip_masks:
                 #cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<50)" --NoDataValue=0'
-                cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<4097) + 1*(logical_and(A>=18433,A<=19946)) + 1*(logical_and(A>=34817,A<=36334))+ 1*(logical_and(A>=51201,A<=52721))" --NoDataValue=0'
+                cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(logical_or(A<84,A==157)) + 255*(logical_and(A>84,A<157))" --NoDataValue=255'
+                #cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<4097) + 1*(logical_and(A>=18433,A<=19946)) + 1*(logical_and(A>=34817,A<=36334))+ 1*(logical_and(A>=51201,A<=52721))" --NoDataValue=0'
                 print cmd
                 os.system(cmd)
-                
-            cmd = 'gdal_calc.bat --overwrite -A ' + tif.replace('.tif','_b.tif') + ' -B ' + id_rs + tif + ' --outfile=' + od + tif + ' --calc="A*B" --NoDataValue=0'
-            print cmd
-            os.system(cmd)
+            
+            if not os.path.exists(od + tif) or args.overwrite:
+                cmd = 'gdal_calc.bat --overwrite -A ' + tif.replace('.tif','_b.tif') + ' -B ' + id_rs + tif + ' --outfile=' + od + tif + ' --calc="A*B"'
+                print cmd
+                os.system(cmd)
+            elif os.path.exists(od + tif) and not args.overwrite:
+                print('Output exists and overwrite is off, skipping')
             
