@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     for tif in tifs:
         if '_b.tif' not in tif:
-            if not args.skip_masks:
+            if not os.path.exists(tif.replace('.tif','_b.tif')) or not args.skip_masks:
                 #cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<50)" --NoDataValue=0'
                 cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(logical_or(A<84,A==157)) + 255*(logical_and(A>84,A<157))" --NoDataValue=255'
                 #cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<4097) + 1*(logical_and(A>=18433,A<=19946)) + 1*(logical_and(A>=34817,A<=36334))+ 1*(logical_and(A>=51201,A<=52721))" --NoDataValue=0'
