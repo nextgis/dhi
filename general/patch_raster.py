@@ -50,7 +50,7 @@ parser.add_argument('template', help='Template raster')
 parser.add_argument('value', help='Maximum meaningful value')
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('-rs','--input_rasters', help='Input GeoTIFF(s) separated by comma')
-group.add_argument('-if','--input_folder', help='Input GeoTIFF(s) separated by comma')
+group.add_argument('-if','--input_folder', help='Input folder')
 args = parser.parse_args()
 
 def sanitize(folder):
@@ -59,16 +59,18 @@ def sanitize(folder):
     
 if __name__ == '__main__':
     od = ''
-    if args.output_folder: od = sanitize()
+    if args.output_folder: od = sanitize(args.output_folder)
     if args.input_folder: 
-        id = sanitize()
+        id = sanitize(args.input_folder)
         inputs = glob.glob(id + '*.tif')
     else:
         inputs = args.input_rasters.split(',')
     
     #create mask from template
     print('Preparing mask from ' + args.template)
-    cmd = 'gdal_calc -A ' + args.template  + ' --outfile=mask.tif ' + '--calc=\"A*(A>=249)\"'
+        
+    cmd = 'gdal_calc.py -A ' + args.template  + ' --outfile=mask.tif ' + ' --calc="A*(A>=' + args.value + ')'
+    
     os.system(cmd)
     
     for input in inputs:
@@ -78,12 +80,16 @@ if __name__ == '__main__':
             print('Processing ' + input)
             
             #apply input raster over mask
-            cmd = 'gdal_merge -o merge.tif mask.tif ' + input
+                        
+            cmd = 'gdalwarp' + ' mask.tif ' + input + ' merge.tif' + ' -srcnodata -3000 ' + ' --config GDAL_CACHEMAX 1000 -wm 500'
+            
             os.system(cmd)
             
             #calculate to drop nodata to 0
             #gdal_calc -A !merge1.tif -B 2003.07.20.tif --outfile=!res.tif --calc="A*(A<255) +  A*(logical_and(B==255,A<>255)) + 0*(logical_and(A==255,B<>255))"
-            cmd = 'gdal_calc -A merge.tif -B ' + args.template + ' --outfile=out.tif ' + '--calc="A*(A<' + args.value + ')'
+                        
+            cmd = 'gdal_calc.py -A merge.tif -B ' + args.template + ' --outfile=out.tif ' + ' --calc="A*(A<' + args.value + ')'
+            
             os.system(cmd)
             
             if args.output_folder:
