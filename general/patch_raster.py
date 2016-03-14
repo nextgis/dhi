@@ -43,14 +43,18 @@ import os
 import sys
 import shutil
 import argparse
+import glob
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-o','--output_folder', help='Output GeoTIFF, if missing input(s) will be overwritten')
-parser.add_argument('template', help='Template raster')
-parser.add_argument('value', help='Maximum meaningful value')
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('-rs','--input_rasters', help='Input GeoTIFF(s) separated by comma')
-group.add_argument('-if','--input_folder', help='Input folder')
+group.add_argument('-if','--input_folder', help='Input folder with GeoTIFF(s)')
+parser.add_argument('-pl','--patch_list', help='File with the list of GeoTIFF(s) which are needed to be patched')
+parser.add_argument('-of','--output_folder', help='Output folder, if missing input(s) will be overwritten')
+parser.add_argument('-t','--template', help='Template raster')
+parser.add_argument('-v','--value', help='Maximum meaningful value')
+
+
 args = parser.parse_args()
 
 def sanitize(folder):
@@ -58,6 +62,13 @@ def sanitize(folder):
     return folder
     
 if __name__ == '__main__':
+    if args.patch_list and not args.input_folder:
+        print('Please select the input folder')
+        sys.exit(1)
+    if args.patch_list and args.input_rasters:
+        print('Please select either input rasters OR the patch list file')
+        sys.exit(1)
+    
     od = ''
     if args.output_folder: od = sanitize(args.output_folder)
     if args.input_folder: 
@@ -65,6 +76,10 @@ if __name__ == '__main__':
         inputs = glob.glob(id + '*.tif')
     else:
         inputs = args.input_rasters.split(',')
+    if args.input_folder and args.patch_list:
+        os.chdir(args.input_folder)
+        with open(args.patch_list, 'r') as infile:
+            inputs = infile.read().split(',')
     
     #create mask from template
     print('Preparing mask from ' + args.template)
