@@ -84,7 +84,14 @@ def main(options, flags):
     maps = grass.read_command('g.list', type='raster',
         mapset=mapset, pattern="%s*" % (input_prefix, ))
     maps = maps.split()
+
+    perm_maps = grass.read_command('g.list', type='raster',
+        mapset='PERMANENT', pattern="%s*" % (input_prefix, ))
+    perm_maps = perm_maps.split()
+    perm_maps = [p + '@PERMANENT' for p in perm_maps]
     
+    maps = maps + perm_maps
+
     try:
         tmp_vect = 'v' + uuid.uuid4().hex
         outfile = open(output, "a")
