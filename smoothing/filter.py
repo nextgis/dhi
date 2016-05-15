@@ -119,7 +119,7 @@ def main(options, flags):
     winsize = options['winsize']
     logfile = options['logfile']
     
-    logger = setup_log(logfile, mapset)
+    logger = setup_log(logfile, mapset, level=logging.INFO)
     
     logger.info('Start calculations in "%s" mapset' % (mapset, ))
       
@@ -139,14 +139,14 @@ def main(options, flags):
     
     # remove previouse results (if any)
     grass.run_command('g.remove', type='raster', pattern="%s*" % (step1_resprefix, ), flags='f')
+    grass.run_command('g.remove', type='raster', pattern="%s*" % (step2_resprefix, ), flags='f')
+
     code = grass.run_command('r.series.filter', input=maps, result_prefix=step1_resprefix, 
         method='median', winsize=winsize, flags='u')
     if code != 0:
         logger.error("First step falls")
     else:       
         logger.info("First step done")
-        # remove previouse results (if any)
-        grass.run_command('g.remove', type='raster', pattern="%s*" % (step2_resprefix, ), flags='f')
         maps = grass.read_command('g.list', type='raster', separator=',',
             mapset=mapset, pattern="%s*" % (step1_resprefix, ))
         maps = maps.strip()
@@ -158,11 +158,14 @@ def main(options, flags):
             logger.error("Second step falls")
         else:
             logger.info("Second step done")
-            if transform_type:
-                maps = grass.read_command('g.list', type='raster', pattern="%s*" % (step2_resprefix, ))
-                maps = maps.split()
-                for map in maps:
-                    grass.run_command('r.mapcalc', expression = "%s = round(%s)" % (map, map), overwrite=True)
+            logger.info('Check limits')
+            maps = grass.read_command('g.list', type='raster', pattern="%s*" % (step2_resprefix, ))
+            maps = maps.split()
+            for map in maps:
+                if transform_type:
+                    grass.run_command('r.mapcalc', expression = "%s = int(if(%s < 0, 0, if (%s > 100, 100, %s)))" % (map, map, map, map), overwrite=True)
+                else:
+                    grass.run_command('r.mapcalc', expression = "%s = if(%s < 0, 0, if (%s > 100, 100, %s))" % (map, map, map, map), overwrite=True)
     
     if remove_first_step:
         grass.run_command('g.remove', type='raster', pattern="%s*" % (step1_resprefix, ), flags='f')
