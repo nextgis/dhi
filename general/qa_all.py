@@ -67,20 +67,27 @@ if __name__ == '__main__':
     os.chdir(id_qa)
 
     tifs = glob.glob('*.tif')
-
+    # tifs = glob.glob('2002.12.03.tif')
     for tif in tifs:
         if '_b.tif' not in tif:
             if not os.path.exists(tif.replace('.tif','_b.tif')) or not args.skip_masks:
                 #cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<50)" --NoDataValue=0'
-                cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(logical_or(A<84,A==157)) + 255*(logical_and(A>84,A<157))" --NoDataValue=255'
+                # cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(logical_or(A<84,A==157)) + 255*(logical_and(A>84,A<157))" --NoDataValue=255'
                 #cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<4097) + 1*(logical_and(A>=18433,A<=19946)) + 1*(logical_and(A>=34817,A<=36334))+ 1*(logical_and(A>=51201,A<=52721))" --NoDataValue=0'
+                cmd = 'gdal_calc -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + '  --calc="1*(A<5411) + 1*(logical_and(A>=18433,A<=21798)) + 1*(logical_and(A>=34817,A<=38378))+ 1*(logical_and(A>=51201,A<=54574))" --NoDataValue=0'
+                
+                # cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<157)" --NoDataValue=255'
+                
                 print cmd
                 os.system(cmd)
             
             if not os.path.exists(od + tif) or args.overwrite:
-                cmd = 'gdal_calc.bat --overwrite -A ' + tif.replace('.tif','_b.tif') + ' -B ' + id_rs + tif + ' --outfile=' + od + tif + ' --calc="A*B"'
+                cmd = 'gdal_calc.bat --overwrite -A ' + tif.replace('.tif','_b.tif') + ' -B ' + id_rs + tif + ' --outfile=' + od + tif + ' --calc="A*B" --NoDataValue=255'
                 print cmd
                 os.system(cmd)
+                
             elif os.path.exists(od + tif) and not args.overwrite:
                 print('Output exists and overwrite is off, skipping')
+                
+                
             

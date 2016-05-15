@@ -1,0 +1,20 @@
+ID,CLASS
+0,Water
+1,Evergreen Needleleaf forest
+2,Evergreen Broadleaf forest
+3,Deciduous Needleleaf forest
+4,Deciduous Broadleaf forest
+5,Mixed forest
+6,Closed shrublands
+7,Open shrublands
+8,Woody savannas
+9,Savannas
+10,Grasslands
+11,Permanent wetlands
+12,Croplands
+13,Urban and built-up
+14,Cropland/Natural vegetation mosaic
+15,Snow and ice
+16,Barren or sparsely vegetated
+254,Unclassified
+255,Fill Value

@@ -12,7 +12,7 @@
 #      create_combined_dhi.py [-h] [-of1 OUTPUT_FOLDER1] [-s SUFFIX] input_folder output_folder2 product
 #      where:
 #           -h              show this help message and exit
-#           input_folder    input folder
+#           input_folder    input_ folder
 #           output_folder1  where to store TIFs for each time slice
 #           output_folder2  where to store the combined result
 #           suffix          suffix to end to resulting file name
@@ -49,7 +49,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('input_folder', help='Input folder')
 parser.add_argument('-of1','--output_folder1', help='Directory to store TIFs for each time slice')
-parser.add_argument('output_folder2', help='where to store the combined result')
+parser.add_argument('-of2','--output_folder2', help='where to store the combined result')
 parser.add_argument('-s', '--suffix', help='suffix to end to resulting file name')
 parser.add_argument('product', help='product code used in folder name')
 args = parser.parse_args()
@@ -63,10 +63,11 @@ if __name__ == '__main__':
     id,od2 = sanitize()
     
     #prepare environment
-    gisbase = os.environ['GISBASE'] = "c:/tools/NextGIS_QGIS/apps/grass/grass-6.4.4/"
+    # gisbase = os.environ['GISBASE'] = "c:/tools/NextGIS_QGIS/apps/grass/grass-6.4.4/"
+    gisbase = os.environ['GISBASE'] = "c:/OSGeo4W/apps/grass/grass-7.0.3/"
     gisdbase = os.environ['GISDBASE'] = "e:/users/maxim/thematic/dhi/"
     location = "dhi_grass"
-    mapset   = "PERMANENT"
+    mapset   = "evi"
 
     sys.path.append(os.path.join(gisbase, "etc", "python"))
      
@@ -78,14 +79,16 @@ if __name__ == '__main__':
     os.chdir(id)
 
     years = range(2003,2014+1)
+    # years = range(2015,2015+1)
     numslices = len(glob.glob(str(years[0]) + '/tif-' + args.product + '-qa/' + '*.tif'))
+    print(numslices)
 
     for year in years:
         i = 0
         for f in glob.glob(str(year) + '/tif-' + args.product + '-qa/' + '*.tif'):
             i+=1
-            grass.run_command('r.in.gdal', input=f, output=str(year) + '_' + str(i))
-
+            grass.run_command('r.in.gdal', input_ = f, output=str(year) + '_' + str(i))
+    
     #Calculate counts and medians for N time slices
     for i in range(1,numslices+1):
         list = ''
@@ -93,23 +96,22 @@ if __name__ == '__main__':
             list = list + ',' + str(year) + '_' + str(i)
         list = list.strip(',')
         
-        grass.run_command('r.series', input=list, output=str(i) + '_cnt,' + str(i) + '_med', method='count,median')
+        grass.run_command('r.series', input_=list, output=str(i) + '_cnt,' + str(i) + '_med', method='count,median')
 
     #Filter out pixels where count is 3 and less
     for i in range(1,numslices+1):
         grass.mapcalc(str(i) + '_f' ' = if(' + str(i) + '_cnt>3, ' + str(i) + '_med, null())')
 
-
+    # # grass.run_command('g.list', type = 'rast', pat = '*_med')
+    grass.run_command('g.list', type = 'rast', pat = 'dh*')
+        
     #export averaged rasters
     od1 = args.output_folder1
     if args.output_folder1:
         for i in range(1,numslices+1):
-            grass.run_command('r.out.gdal', input=str(i)+'_med', output=od1 + str(i) + '_med.tif', type='Byte', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES')
-            grass.run_command('r.out.gdal', input=str(i)+'_avg', output=od1 + str(i) + '_avg.tif', type='Byte', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES')
+            grass.run_command('r.out.gdal', input_=str(i)+'_med', output=od1 + str(i) + '_med.tif', type='Byte', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES')
             
-            cmd = "gdal_edit -a_srs \"EPSG:4326\" " + od1 + str(i) + '_med.tif'
-            os.system(cmd)
-            cmd = "gdal_edit -a_srs \"EPSG:4326\" " + od1 + str(i) + '_avg.tif'
+            cmd = "gdal_edit -a_srs \"+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs\" " + od1 + str(i) + '_med.tif'
             os.system(cmd)
         
     if not args.suffix: args.suffix = ''
@@ -117,21 +119,26 @@ if __name__ == '__main__':
 
     t = '_f'
     list = ''
+    
+    years = range(2003,2015+1)
+    numslices = len(glob.glob(str(years[0]) + '/tif-' + args.product + '-qa/' + '*.tif'))
+    print(numslices)
+    
     for i in range(1,numslices+1):
         list = list + ',' + str(i) + t
         
     list = list.strip(',')
 
-    grass.run_command('r.series', input=list, output='dh1' + t + ',dh2' + t + ',ave' + t + ',std' + t, method='sum,minimum,average,stddev')
+    grass.run_command('r.series', input_=list, output='dh1' + t + ',dh2' + t + ',ave' + t + ',std' + t, method='sum,minimum,average,stddev')
     grass.mapcalc('dh3' + t + ' = std' + t + '/ave' + t)
 
-
-    grass.run_command('i.group', group='rgb_group' + t, input='dh1' + t + ',dh2' + t + ',dh3' + t)
-    grass.run_command('r.out.gdal', input='rgb_group' + t, output=fn_out, type='Float32', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES')
+    grass.run_command('g.remove', type_ = 'group', name = 'rgb_group' + t, flags = 'f')
+    grass.run_command('i.group', group='rgb_group' + t, input_='dh1' + t + ',dh2' + t + ',dh3' + t)
+    grass.run_command('r.out.gdal', input_='rgb_group' + t, output=fn_out, type='Float32', flags = 'f', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES')
     shutil.move(fn_out,od2 + fn_out)
     shutil.move(fn_out + '.aux.xml',od2 + fn_out + '.aux.xml')
     shutil.move(fn_out.replace('.tif','.tfw'),od2 + fn_out.replace('.tif','.tfw'))
 
-    cmd = "gdal_edit -a_srs \"EPSG:4326\" " + od2 + fn_out
+    cmd = "gdal_edit -a_srs \"+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs\" " + od2 + fn_out
     os.system(cmd)
 

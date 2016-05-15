@@ -43,18 +43,14 @@ import os
 import sys
 import shutil
 import argparse
-import glob
 
 parser = argparse.ArgumentParser()
+parser.add_argument('-o','--output_folder', help='Output GeoTIFF, if missing input(s) will be overwritten')
+parser.add_argument('template', help='Template raster')
+parser.add_argument('value', help='Maximum meaningful value')
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('-rs','--input_rasters', help='Input GeoTIFF(s) separated by comma')
-group.add_argument('-if','--input_folder', help='Input folder with GeoTIFF(s)')
-parser.add_argument('-pl','--patch_list', help='File with the list of GeoTIFF(s) which are needed to be patched')
-parser.add_argument('-of','--output_folder', help='Output folder, if missing input(s) will be overwritten')
-parser.add_argument('-t','--template', help='Template raster')
-parser.add_argument('-v','--value', help='Maximum meaningful value')
-
-
+group.add_argument('-if','--input_folder', help='Input GeoTIFF(s) separated by comma')
 args = parser.parse_args()
 
 def sanitize(folder):
@@ -62,30 +58,17 @@ def sanitize(folder):
     return folder
     
 if __name__ == '__main__':
-    if args.patch_list and not args.input_folder:
-        print('Please select the input folder')
-        sys.exit(1)
-    if args.patch_list and args.input_rasters:
-        print('Please select either input rasters OR the patch list file')
-        sys.exit(1)
-    
     od = ''
-    if args.output_folder: od = sanitize(args.output_folder)
+    if args.output_folder: od = sanitize()
     if args.input_folder: 
-        id = sanitize(args.input_folder)
+        id = sanitize()
         inputs = glob.glob(id + '*.tif')
     else:
         inputs = args.input_rasters.split(',')
-    if args.input_folder and args.patch_list:
-        os.chdir(args.input_folder)
-        with open(args.patch_list, 'r') as infile:
-            inputs = infile.read().split(',')
     
     #create mask from template
     print('Preparing mask from ' + args.template)
-        
-    cmd = 'gdal_calc.py -A ' + args.template  + ' --outfile=mask.tif ' + ' --calc="A*(A>=' + args.value + ')'
-    
+    cmd = 'gdal_calc -A ' + args.template  + ' --outfile=mask.tif ' + ' --calc="A*(A>' + args.value + ')" + ' --overwrite'
     os.system(cmd)
     
     for input in inputs:
@@ -95,16 +78,13 @@ if __name__ == '__main__':
             print('Processing ' + input)
             
             #apply input raster over mask
-                        
-            cmd = 'gdalwarp' + ' mask.tif ' + input + ' merge.tif' + ' -srcnodata -3000 ' + ' --config GDAL_CACHEMAX 1000 -wm 500'
-            
+            cmd = 'gdal_merge -o merge.tif mask.tif ' + input
             os.system(cmd)
             
             #calculate to drop nodata to 0
             #gdal_calc -A !merge1.tif -B 2003.07.20.tif --outfile=!res.tif --calc="A*(A<255) +  A*(logical_and(B==255,A<>255)) + 0*(logical_and(A==255,B<>255))"
-                        
-            cmd = 'gdal_calc.py -A merge.tif -B ' + args.template + ' --outfile=out.tif ' + ' --calc="A*(A<' + args.value + ')'
             
+            cmd = 'gdal_calc -A merge.tif -B ' + args.template + ' --outfile=out.tif ' + '--calc="A*(A<' + args.value + ')'
             os.system(cmd)
             
             if args.output_folder:

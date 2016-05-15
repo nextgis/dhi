@@ -46,7 +46,8 @@ import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-if','--input_folder', help='Input folder of GeoTIFF rasters to be tested')
-parser.add_argument('-o','--output_file', help='Output file with the list of rasters which needed to be patched')
+parser.add_argument('-of','--output_file', help='Output file with the list of rasters which needed to be patched')
+parser.add_argument('-n','--nodata', help='Nodata value')
 parser.add_argument('--coor', nargs=2, help="Test coordinates")
 args = parser.parse_args()
 
@@ -62,8 +63,8 @@ if __name__ == '__main__':
     os.chdir(inf)
 
     if not args.output_file:
-        args.output_file = os.path.join(args.input_folder + os.sep, 'rasters_to_patch.txt')
-    
+        args.output_file = os.path.join(args.input_folder, 'rasters_to_patch.txt')
+        
     print('Output file: ' + args.output_file + '\n')
     
     if os.path.exists(args.output_file):
@@ -75,13 +76,18 @@ if __name__ == '__main__':
     for tif in tifs:
         cmd = 'gdallocationinfo -valonly -geoloc ' + tif + ' ' + coords
         val = subprocess.check_output(cmd, shell=True).rsplit()
-        if '-3000' in val or not val:
+        if args.nodata in val or not val or val == '0':
+            print val
             print(tif + ' need to be patched')
-            with open(args.output_file, 'a') as outfile:
+            with open(args.output_file, 'w') as outfile:
                 outfile.write(tif+',')
     
-    with open(args.output_file, 'r+') as outfile:
-        line = outfile.read()[:-1]
-        outfile.seek(0)
-        outfile.write(line)
-        outfile.truncate()
+    try:
+        with open(args.output_file, 'r+') as outfile:
+            line = outfile.read()[:-1]
+            outfile.seek(0)
+            outfile.write(line)
+            outfile.truncate()
+    except IOError as err:
+        print err.errno 
+        print err.strerror

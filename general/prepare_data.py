@@ -62,10 +62,11 @@ def sanitize():
 if __name__ == '__main__':
     id,od = sanitize()
     script_path = os.getcwd() + '\\'
+    script_path = script_path.replace('\\','/')
     
     os.chdir(id)
     dates = next(os.walk('.'))[1]
-    
+
     pixel_size = ''
     epsg = '-t_srs EPSG:4326'
     overwrite = ''
@@ -77,21 +78,26 @@ if __name__ == '__main__':
     if args.overwrite: overwrite = '-o '
     
     for date in dates:
-        cmd = 'python ' + script_path + 'hdf2tif.py ' + overwrite + args.dataset.split(':')[0] + ':' + '\"' + args.dataset.split(':')[1] + '\" ' + id + date + '\\'
-        print(cmd)
-        os.system(cmd)
-        
-        if not os.path.exists(id + date + '\\' + date + '.vrt') or args.overwrite:
-            cmd = 'python ' + script_path + 'merge_all.py ' + date + '.vrt '  + id + date + '\\ ' + id + date + '\\ '
+        # if date in glob.glob('2015.12.[0-9][0-9]'):
+        # if date in glob.glob('2015*'):
+        if date in glob.glob('2015.07.04'):
+            cmd = 'python ' + script_path + 'hdf2tif.py ' + overwrite + args.dataset.split(':')[0] + ':' + '\"' + args.dataset.split(':')[1] + '\" ' + id + date + '\\'
+            print(cmd)
             os.system(cmd)
-        
-        if not os.path.exists(od + date + '.tif') and os.path.exists(id + date + '\\' + date + '.vrt')  or args.overwrite:
-            if args.epsg != 'SIN':
-                cmd = 'gdalwarp ' + epsg + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + od + date + '.tif'
-            else:
-                if args.pixel_size:
-                    cmd = 'gdalwarp ' + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + od + date + '.tif'
+                
+            if not os.path.exists(id + date + '\\' + date + '.vrt') or args.overwrite:
+                cmd = 'python ' + script_path + 'merge_all.py ' + date + '.vrt '  + id + date + '\\ ' + id + date + '\\ '
+                print(cmd)
+                os.system(cmd)
+            
+            if not os.path.exists(od + date + '.tif') and os.path.exists(id + date + '\\' + date + '.vrt')  or args.overwrite:
+                if args.epsg != 'SIN':
+                    cmd = 'gdalwarp ' + epsg + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + od + date + '.tif '
                 else:
-                    cmd = 'gdal_translate ' + id + date + '\\' + date + '.vrt ' + od + date + '.tif'
-            os.system(cmd)
+                    if args.pixel_size:
+                        cmd = 'gdalwarp ' + pixel_size + ' ' + id + date + '\\' + date + '.vrt ' + od + date + '.tif ' + ' --config GDAL_CACHEMAX 500 -wm 500'
+                    else:
+                        cmd = 'gdal_translate ' + id + date + '\\' + date + '.vrt ' + od + date + '.tif' 
+                print(cmd)
+                os.system(cmd)
         
