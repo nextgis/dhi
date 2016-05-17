@@ -66,13 +66,12 @@ if __name__ == '__main__':
 
     os.chdir(id_qa)
 
-    # tifs = glob.glob('*.tif')
+    tifs = glob.glob('*.tif')
     # tifs = glob.glob('2015.01.01.tif')
     # tifs = ['2015.01.11.tif','2015.01.19.tif','2015.01.27.tif']
     # tifs = glob.glob('2013.12.[1|2][1|7|9].tif')
     # tifs = ['2011.01.01.tif', '2011.12.11.tif', '2011.12.19.tif', '2011.12.27.tif']
-    tifs = ['2012.01.17.tif', '2012.01.25.tif']
-    
+    # tifs = ['2012.01.17.tif', '2012.01.25.tif']
     # tifs = glob.glob('2013.12.[1|2][1|7|9].tif')
     
     for tif in tifs:

@@ -12,15 +12,16 @@
 #      patch_raster.py [-h] [-o OUTPUT_FOLDER] (-rs INPUT_RASTERS | -if INPUT_FOLDER) template value
 #      where:
 #           -h                      show this help message and exit
-#           -rs INPUT_RASTERS       input GeoTIFF rasters to be patched, separated by comma
 #           -if INPUT_FOLDER        input folder of GeoTIFF rasters to be patched
+#           -rs INPUT_RASTERS       input GeoTIFF rasters to be patched, separated by comma
+#           -pl PATCH_LIST          file with the list of GeoTIFF(s) which are needed to be patched
 #           -o OUTPUT_FOLDER        output folder, if missing input will be overwritten
 #           template                template raster
-#           value                   Maximum meaningful value
+#           value                   maximum meaningful value
 # Example:
-#      python patch_raster.py input.tif -o output.tif template.tif
+#      python patch_raster.py -rs input.tif -of output.tif -t template.tif -v 10000
 #
-# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info), Alexander Muriy (amuriy AT gmail.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free

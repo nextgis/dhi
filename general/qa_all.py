@@ -73,10 +73,18 @@ if __name__ == '__main__':
             if not os.path.exists(tif.replace('.tif','_b.tif')) or not args.skip_masks:
                 #cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<50)" --NoDataValue=0'
                 # cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(logical_or(A<84,A==157)) + 255*(logical_and(A>84,A<157))" --NoDataValue=255'
-                #cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<4097) + 1*(logical_and(A>=18433,A<=19946)) + 1*(logical_and(A>=34817,A<=36334))+ 1*(logical_and(A>=51201,A<=52721))" --NoDataValue=0'
+                # cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<157)" --NoDataValue=255'
+                
+                ## for MCD15A2
+                # cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(logical_or(A<84,A==157)) + 255*(logical_and(A>84,A<157))" --NoDataValue=255' +  ' --overwrite'
+                
+                ## for MOD17A2
+                # cmd = 'gdal_calc -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<157) +255*(A==157)" --NoDataValue=255'
+                
+                ## for MOD13A2 (NDVI/EVI) ??
                 cmd = 'gdal_calc -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + '  --calc="1*(A<5411) + 1*(logical_and(A>=18433,A<=21798)) + 1*(logical_and(A>=34817,A<=38378))+ 1*(logical_and(A>=51201,A<=54574))" --NoDataValue=0'
                 
-                # cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<157)" --NoDataValue=255'
+               
                 
                 print cmd
                 os.system(cmd)

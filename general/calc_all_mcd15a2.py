@@ -19,7 +19,7 @@
 # Example:
 #      python calc_all.py 200 y:\vcf\global\ y:\vcf\global\calc UInt16
 #
-# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info), Alexander Muriy (amuriy AT gmail.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free

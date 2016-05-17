@@ -66,19 +66,17 @@ if __name__ == '__main__':
 
     os.chdir(id_qa)
 
-    # tifs = glob.glob('*.tif')
-    tifs = glob.glob('2015.12.[1|2][1|7|9].tif')
+    tifs = glob.glob('*.tif')
+    # tifs = glob.glob('2015.12.[1|2][1|7|9].tif')
     # tifs = glob.glob('2015.12.27.tif')
 
     for tif in tifs:
         if '_b.tif' not in tif:
             if not os.path.exists(tif.replace('.tif','_b.tif')) or not args.skip_masks:
-                # cmd = 'gdal_calc.py -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<157) +255*(A==157)" --NoDataValue=255' +  ' --overwrite'
                 cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(logical_or(A<84,A==157)) + 255*(logical_and(A>84,A<157))" --NoDataValue=255' +  ' --overwrite'
                 
                 print cmd
                 os.system(cmd)
-                # pass
             
             if not os.path.exists(od + tif) or args.overwrite:
                 cmd = 'gdal_calc.py --overwrite -A ' + tif.replace('.tif','_b.tif') + ' -B ' + id_rs + tif + ' --outfile=' + od + tif + ' --calc="A*B" --NoDataValue=255'

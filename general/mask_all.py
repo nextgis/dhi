@@ -14,13 +14,12 @@
 #           -h                      show this help message and exit
 #           -rs INPUT_RASTERS       input GeoTIFF rasters to be patched, separated by comma
 #           -if INPUT_FOLDER        input folder of GeoTIFF rasters to be patched
-#           -o OUTPUT_FOLDER        output folder, if missing input will be overwritten
-#           template                template raster
-#           value                   Maximum meaningful value
-# Example:
-#      python patch_raster.py input.tif -o output.tif template.tif
+#           -of OUTPUT_FOLDER        output folder, if missing input will be overwritten
 #
-# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+# Example:
+#      python mask_all.py -if x:\MOD13A2\2002\tif-evi-qa -of x:\MOD13A2\2002\tif-evi-qa-mask
+#
+# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info), Alexander Muriy (amuriy AT gmail.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -46,9 +45,10 @@ import argparse
 import glob
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-rs','--input_rasters', help='Input GeoTIFF(s) separated by comma')
 parser.add_argument('-if','--input_folder', help='Input folder with GeoTIFF(s)')
+parser.add_argument('-rs','--input_rasters', help='Input GeoTIFF(s) separated by comma')
 parser.add_argument('-of','--output_folder', help='Output folder, if missing input(s) will be overwritten')
+parser.add_argument('-m','--mask', help='Path to the raster which will be used as a binary mask')
 parser.add_argument('-o','--overwrite', action="store_true", help='Overwrite outputs')
 
 args = parser.parse_args()
@@ -98,7 +98,7 @@ if __name__ == '__main__':
             # grass.mapcalc(input_name + '_0 = if(isnull(' + input_name + '),Fpar_NoData_sin_b,' + input_name + ')', overwrite = True)
             # grass.run_command('r.out.gdal', input_ = input_name + '_0', output = id + input_name + '_0.tif', overwrite = True)
             
-            cmd = 'gdal_calc.py --overwrite ' + ' -A y:/dhi/masks/Fpar_NoData_sin_b_resize.tif ' + ' -B ' + input + ' --outfile=' + od + input_name + ' --calc="A*B"' + ' --NoDataValue=255'
+            cmd = 'gdal_calc.py --overwrite ' + ' -A ' + args.mask + ' -B ' + input + ' --outfile=' + od + input_name + '.tif' +  ' --calc="A*B"' + ' --NoDataValue=255'
             
             # cmd = 'gdal_calc.py --overwrite ' + ' -A y:/dhi/masks/Fpar_NoData_sin_b.tif ' + ' -B ' + id + input_name + '_0.tif' + ' --outfile=' + od + input_name + '.tif' + ' --calc="A*B"  --NoDataValue=255' + ' --overwrite'
             

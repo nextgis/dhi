@@ -17,7 +17,7 @@
 #           output_folder  output folder
 #           type           Int32, Int16, Float64, UInt16, Byte, UInt32, Float32
 # Example:
-#      python calc_all.py 200 y:\vcf\global\ y:\vcf\global\calc UInt16
+#      python calc_all.py y:\vcf\global\ y:\vcf\global\calc -v 200 -t UInt16
 #
 # Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
 #
@@ -45,7 +45,7 @@ import shutil
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('val', help='Value to use as a threshold')
+parser.add_argument('-v','--val', help='Value to use as a threshold')
 parser.add_argument('input_folder', help='Input folder')
 parser.add_argument('output_folder', help='Output folder')
 parser.add_argument('-t','--type', help='Int32, Int16, Float64, UInt16, Byte, UInt32, Float32')
@@ -66,10 +66,15 @@ if __name__ == '__main__':
         type = '--type=' + args.type
 
     os.chdir(id)
-
+    
     tifs = glob.glob('*.tif')
     for tif in tifs:
-        cmd = 'gdal_calc.bat ' + type + '-A ' + tif + ' --outfile=temp.tif ' + tif + ' --calc="A*(A>' + args.val + ') " --NoDataValue=0'
-        os.system(cmd)
-        
-        shutil.move('temp.tif',od + tif)
+        if not os.path.exists(od + tif) or args.overwrite:
+            print('Processing ... ' + tif)
+            # cmd = 'gdal_calc.bat ' + type + '-A ' + tif + ' --outfile=temp.tif ' + tif + ' --calc="A*(A<=100) +255*(A>100) " --NoDataValue=255'
+            cmd = 'gdal_calc.bat ' + type + '-A ' + tif + ' --outfile=temp.tif ' + tif + ' --calc="A*(A>' + args.val + ') " --NoDataValue=0'
+            os.system(cmd)
+            shutil.move('temp.tif',od + tif)
+            
+        elif os.path.exists(od + tif) and not args.overwrite:
+            print('Output exists and overwrite is off, skipping')
