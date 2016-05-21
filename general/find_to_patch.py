@@ -59,35 +59,45 @@ if __name__ == '__main__':
     if args.input_folder: 
         inf = sanitize(args.input_folder)
 
-    print('\n' + 'Input folder: ' + inf + '\n')
+    # print('\n' + 'Input folder: ' + inf + '\n')
     os.chdir(inf)
 
-    if not args.output_file:
-        args.output_file = os.path.join(args.input_folder, 'rasters_to_patch.txt')
-        
-    print('Output file: ' + args.output_file + '\n')
+    # if not args.output_file:
+        # args.output_file = os.path.join(args.input_folder, 'rasters_to_patch.txt')
     
-    if os.path.exists(args.output_file):
-        os.remove(args.output_file)
+    if args.output_file:
+        print('Output file: ' + args.output_file + '\n')
+        if os.path.exists(args.output_file):
+            os.remove(args.output_file)
 
     coords = " ".join(map(str,args.coor))
         
     tifs = glob.glob('*.tif')
+    
+    tiflist = []
     for tif in tifs:
         cmd = 'gdallocationinfo -valonly -geoloc ' + tif + ' ' + coords
         val = subprocess.check_output(cmd, shell=True).rsplit()
-        if args.nodata in val or not val or val == '0':
-            print val
-            print(tif + ' need to be patched')
-            with open(args.output_file, 'w') as outfile:
-                outfile.write(tif+',')
+        # if args.nodata in val or not val or val == ['0']:
+        if args.nodata in val or not val:
+            if not args.output_file:
+                # print val
+                # print(tif + ' need to be patched')
+                tiflist.append(tif)
+            else:
+                with open(args.output_file, 'w') as outfile:
+                    outfile.write(tif+',')
     
-    try:
-        with open(args.output_file, 'r+') as outfile:
-            line = outfile.read()[:-1]
-            outfile.seek(0)
-            outfile.write(line)
-            outfile.truncate()
-    except IOError as err:
-        print err.errno 
-        print err.strerror
+    if len(tiflist) > 0:  
+        print ",".join(map(str,tiflist))
+    
+    if args.output_file:
+        try:
+            with open(args.output_file, 'r+') as outfile:
+                line = outfile.read()[:-1]
+                outfile.seek(0)
+                outfile.write(line)
+                outfile.truncate()
+        except IOError as err:
+            print err.errno 
+            print err.strerror

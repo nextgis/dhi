@@ -65,7 +65,7 @@ if __name__ == '__main__':
     wd = os.getcwd()
 
     os.chdir(id_qa)
-
+    
     tifs = glob.glob('*.tif')
     # tifs = glob.glob('2002.12.03.tif')
     for tif in tifs:
@@ -75,14 +75,19 @@ if __name__ == '__main__':
                 # cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(logical_or(A<84,A==157)) + 255*(logical_and(A>84,A<157))" --NoDataValue=255'
                 # cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<157)" --NoDataValue=255'
                 
-                ## for MCD15A2
-                # cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(logical_or(A<84,A==157)) + 255*(logical_and(A>84,A<157))" --NoDataValue=255' +  ' --overwrite'
+                ## for MCD15A2 (FPAR/LAI)
+                if 'fpar' in id_rs or 'lai' in id_rs:
+                    cmd = 'gdal_calc.bat -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(logical_or(A<84,A==157)) + 255*(logical_and(A>84,A<157))" --NoDataValue=255' +  ' --overwrite'
                 
-                ## for MOD17A2
+                ## for MOD17A2 (GPP)
+                if 'gpp' in id_rs :
+                    cmd = 'gdal_calc -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<=157) +255*(A>157)" --NoDataValue=255'
                 # cmd = 'gdal_calc -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + ' --calc="1*(A<157) +255*(A==157)" --NoDataValue=255'
                 
+                
                 ## for MOD13A2 (NDVI/EVI) ??
-                cmd = 'gdal_calc -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + '  --calc="1*(A<5411) + 1*(logical_and(A>=18433,A<=21798)) + 1*(logical_and(A>=34817,A<=38378))+ 1*(logical_and(A>=51201,A<=54574))" --NoDataValue=0'
+                if 'evi' in id_rs or 'ndvi' in id_rs:
+                    cmd = 'gdal_calc -A ' + tif + ' --outfile=' + tif.replace('.tif','_b.tif') + '  --calc="1*(A<5411) + 1*(logical_and(A>=18433,A<=21798)) + 1*(logical_and(A>=34817,A<=38378))+ 1*(logical_and(A>=51201,A<=54574))" --NoDataValue=0'
                 
                
                 
