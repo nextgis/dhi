@@ -9,12 +9,13 @@
 # More: http://github.com/nextgis/dhi
 #
 # Usage: 
-#      get_unique.py [-h] (-rs RASTERS | -fs FOLDERS) output
+#      get_unique.py [-h] (-rs RASTERS | -fs FOLDERS) output_unique output_counts
 #      where:
 #           -h                 show this help message and exit
 #           -rs                path(s) to raster, separate by comma if several
 #           -fs                path(s) to folders with raster, separate by comma if several
-#           output             text file where unique values will be stored
+#           output_unique      text file where unique values will be stored
+#           output_counts      text file where counts for unique values will be stored
 # Examples:
 #      python get_unique.py -fs y:\dhi\global\fpar_4\,y:\dhi\global\fpar_4\combined\ out.txt
 #      python get_unique.py -rs y:\dhi\global\fpar_4\raster1.tif,y:\dhi\global\fpar_4\combined\raster2.tif out.txt
