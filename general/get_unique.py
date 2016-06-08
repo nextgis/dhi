@@ -44,9 +44,11 @@ import sys
 import glob
 import argparse
 from progressbar import *
+import struct
 
 parser = argparse.ArgumentParser()
-parser.add_argument('output', help='Output file')
+parser.add_argument('output_unique', help='Output file with unique value')
+parser.add_argument('output_counts', help='Output file with counts')
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('-rs','--rasters', help='full raster path(s), separate by comma if several')
 group.add_argument('-fs','--folders', help='path(s) to folders with raster, separate by comma if several')
@@ -64,35 +66,73 @@ if args.rasters:
 
 unique_values_all = ()
 
-for raster in inRasters:
-    print('Processing raster ' + raster)
-    
-    ds = gdal.Open(raster)
-    band = ds.GetRasterBand(1)
+def countValues(val):
+    #TODO: use something faster, get rid on struct
 
-    cols = band.XSize
-    rows = band.YSize
+    count_value = 0
 
-    nBlockXSize = band.GetBlockSize()[0]
-    nBlockYSize = band.GetBlockSize()[1]
-    
-    pbar = ProgressBar(widgets=[Bar('=', '[', ']'), ' ', Counter(), " of " + str(rows), ' ', ETA()]).start()
-    pbar.maxval = rows
-    
-    unique_values = ()
-    for x in range(rows):
-        array = band.ReadAsArray(0, x, cols, 1)
-        unique_values_line = np.unique(array)
-        
-        unique_values = np.unique(np.hstack((unique_values,unique_values_line)))
+    pbar = ProgressBar(widgets=[Bar('=', '[', ']'), ' ', Counter(), " of " + str(band.YSize), ' ', ETA()]).start()
+    pbar.maxval = band.YSize
+
+    for y in range(band.YSize):
+
         pbar.update(pbar.currval+1)
-    
-    unique_values_all = np.unique(np.hstack((unique_values_all,unique_values)))
-    print('Found ' + str(len(unique_values)) + ' values for current raster. Total unique: ' + str(len(unique_values_all))+'\n')
-    pbar.finish()
-        
-    f_out = open(args.output,'wb')
-    for val in unique_values_all:
-        f_out.write(str(int(val)) + '\n')
 
-    f_out.close()
+        scanline = band.ReadRaster(0, y, band.XSize, 1, band.XSize, 1, band.DataType)
+        values = struct.unpack(fmttypes[BandType] * band.XSize, scanline)
+
+        for value in values:
+            if value == val:
+                count_value += 1
+
+    dataset = None
+    pbar.finish()
+
+    return count_value
+
+
+if __name__ == '__main__':
+    fmttypes = {'Byte':'B', 'UInt16':'H', 'Int16':'h', 'UInt32':'I', 'Int32':'i', 'Float32':'f', 'Float64':'d'}
+
+    for raster in inRasters:
+        print('Processing raster ' + raster)
+        
+        ds = gdal.Open(raster)
+        band = ds.GetRasterBand(1)
+        BandType = gdal.GetDataTypeName(band.DataType)
+
+        cols = band.XSize
+        rows = band.YSize
+
+        nBlockXSize = band.GetBlockSize()[0]
+        nBlockYSize = band.GetBlockSize()[1]
+        
+        pbar = ProgressBar(widgets=[Bar('=', '[', ']'), ' ', Counter(), " of " + str(rows), ' ', ETA()]).start()
+        pbar.maxval = rows
+        
+        unique_values = ()
+        for x in range(rows):
+            array = band.ReadAsArray(0, x, cols, 1)
+            unique_values_line = np.unique(array)
+            
+            unique_values = np.unique(np.hstack((unique_values,unique_values_line)))
+            pbar.update(pbar.currval+1)
+        
+        unique_values_all = np.unique(np.hstack((unique_values_all,unique_values)))
+        print('Found ' + str(len(unique_values)) + ' values for current raster. Total unique: ' + str(len(unique_values_all))+'\n')
+        pbar.finish()
+            
+        f_out_unique = open(args.output_unique,'wb')
+        for val in unique_values_all:
+            f_out_unique.write(str(int(val)) + '\n')
+
+        f_out_unique.close()
+
+        f_out_counts = open(args.output_counts,'wb')
+        for val in unique_values_all:
+            print "Calculating count for %d" % val
+            count_value = countValues(val)
+            f_out_counts.write(str(int(val)) + ',' + str(count_value) + '\n')
+
+        f_out_counts.close()
+        
