@@ -78,8 +78,10 @@ if __name__ == '__main__':
     for tif in tifs:
         cmd = 'gdallocationinfo -valonly -geoloc ' + tif + ' ' + coords
         val = subprocess.check_output(cmd, shell=True).rsplit()
-        # if args.nodata in val or not val or val == ['0']:
-        if args.nodata in val or not val:
+        
+        # if val == ['0']:
+        if args.nodata in val or not val or val == ['0']:
+        # if args.nodata in val or not val:
             if not args.output_file:
                 # print val
                 # print(tif + ' need to be patched')

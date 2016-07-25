@@ -70,7 +70,8 @@ if __name__ == '__main__':
 
     # tifs = glob.glob('*.tif')
     # tifs = glob.glob('2015.12.27.tif')
-    tifs = glob.glob('2015.12.[1|2][1|7|9].tif')
+    # tifs = glob.glob('2015.12.[1|2][1|7|9].tif')
+    tifs = ['2015.12.11.tif','2015.12.19.tif','2015.12.27.tif']
     
     for tif in tifs:
         if not os.path.exists(od + tif) or args.overwrite:
