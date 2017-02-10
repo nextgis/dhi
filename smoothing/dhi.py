@@ -94,7 +94,8 @@ def main(options, flags):
         
         
 if __name__ == "__main__":
-    gisbase = os.environ['GISBASE']
+    # gisbase = os.environ['GISBASE']
+    gisbase = os.environ['GISBASE'] = "c:/OSGeo4W/apps/grass/grass-7.0.3/"
     gisdbase = os.environ['GISDBASE']
     location = os.environ['LOCATION_NAME']
     

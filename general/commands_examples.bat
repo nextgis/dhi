@@ -167,6 +167,10 @@ python e:\users\maxim\Programming\python\extract_values\extract_values.py -g -f 
 
 python e:\users\maxim\Programming\python\extract_values\extract_values.py -g -f e:\users\maxim\thematic\dhi\random_points\biomes-shp\pnt_wwf_globe_biome8_tempgrass_30k.shp -rl W:\AMPHIBIANS_global_IUCN_range_counts_int32_world.img,W:\BIRDS_global_IUCN_range_counts_int32_world.img,W:\MAMMTERR_global_IUCN_range_counts_int32_world.img,W:\REPTILES_global_IUCN_range_counts_int32_world.img,y:\landcover\global\igbp\majority_landcovers.tif,y:\dhi\global\fpar_8\combined-v3\dhi_fpar8qa_f.tif,y:\dhi\global\lai_8\combined-v3\dhi_lai8qa_f.tif
 
+python e:\users\maxim\Programming\python\extract_values\extract_values.py -g -f e:\users\maxim\thematic\dhi\random_points\random_1m.shp -rl W:\AMPHIBIANS_global_IUCN_range_counts_int32_world.img,W:\BIRDS_global_IUCN_range_counts_int32_world.img,W:\MAMMTERR_global_IUCN_range_counts_int32_world.img,W:\REPTILES_global_IUCN_range_counts_int32_world.img,y:\landcover\global\igbp\majority_landcovers.tif,y:\dhi\global\fpar_8\combined-v5\dhi_fpar8qa_f.tif,y:\dhi\global\gpp\combined-v5\dhi_gppqa_f.tif,y:\dhi\global\ndvi\combined-v5\dhi_ndviqa_f.tif
+
+python e:\users\maxim\Programming\python\extract_values\extract_values.py -g -f e:\users\maxim\thematic\dhi\random_points\biomes-igbp\pnt_wwf_globe_all_biomes_30k.shp -rl y:\dhi\global\gpp\combined-v5\dhi_gppqa_f.tif,y:\dhi\global\ndvi\combined-v5\dhi_ndviqa_f.tif
+
 for %i in (*.shp) DO ogr2ogr -sql "SELECT * FROM %~ni WHERE majority_l NOT IN (0,12,13,15,16,254,255) AND dhi_fpar1 != -1 ORDER BY RANDOM() LIMIT 10000" -dialect SQLITE select\%i %i
 
 python landcovers_majority.py y:\landcover\global\npp\ npp majority_landcovers.tif 9

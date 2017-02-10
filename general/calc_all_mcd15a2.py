@@ -71,22 +71,29 @@ if __name__ == '__main__':
     # tifs = glob.glob('*.tif')
     # tifs = glob.glob('2015.12.27.tif')
     # tifs = glob.glob('2015.12.[1|2][1|7|9].tif')
+    # tifs = ['2015.12.19.tif','2015.12.27.tif']
     tifs = ['2015.12.11.tif','2015.12.19.tif','2015.12.27.tif']
+    # tifs = ['2007.06.18.tif']
     
     for tif in tifs:
         if not os.path.exists(od + tif) or args.overwrite:
             print('Processing ... ' + tif)
             
+            temp0 = id + 'temp0_' + tif 
             temp1 = id + 'temp1_' + tif 
             temp2 = id + 'temp2_' + tif 
             temp3 = id + 'temp3_' + tif 
             
-            cmd1 = 'gdal_calc -A ' + tif + ' --outfile=' + temp1 + ' --calc="0*(logical_or(A==252,A==253)) + A*(logical_and(A!=252,A!=253)) +255*(A==250)" --NoDataValue=255 --overwrite'
+            cmd0 = 'gdalwarp -srcnodata 0 -dstnodata 254 ' + tif +  ' ' + temp0 + ' --config GDAL_CACHEMAX 500 -wm 500 '
+            
+            cmd1 = 'gdal_calc -A ' + temp0 + ' --outfile=' + temp1 + ' --calc="0*(logical_or(A==252,A==253)) + A*(logical_and(A!=252,A!=253)) +255*(A==250)" --NoDataValue=255 --overwrite'
             
             cmd2 = 'gdalwarp -srcnodata 254 -dstnodata 255 ' + temp1 +  ' ' + temp2 + ' --config GDAL_CACHEMAX 500 -wm 500 '
             
             cmd3 = 'gdal_calc.py -A ' + temp2 + ' --outfile=' + temp3 + ' --calc="A*(A<249)" --NoDataValue=255 --overwrite'
             
+            print cmd0
+            os.system(cmd0)
             print cmd1
             os.system(cmd1)
             print cmd2
@@ -98,6 +105,7 @@ if __name__ == '__main__':
             # shutil.move(temp4,od + tif)
 
             shutil.move(temp3,od + tif) 
+            os.remove(temp0)
             os.remove(temp1)
             os.remove(temp2)
             

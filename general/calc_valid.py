@@ -9,16 +9,16 @@
 # More: http://github.com/nextgis/dhi
 #
 # Usage: 
-#      calc_valid.py [-h] [-of1 OUTPUT_FOLDER1] [-s SUFFIX] input_folder output_folder2 product
+#      calc_valid.py [-h] [-if INPUT_FOLDER] [-of OUTPUT_FOLDER] product
 #      where:
-#           -h              show this help message and exit
-#           input_folder    input_ folder
-#           output_folder  where to store TIFs for each time slice
-#           product         product code used in folder name
+#           -h                  show this help message and exit
+#           -if INPUT_FOLDER    input_ folder
+#           -of OUTPUT_FOLDER   input_ folder
+#           product             product code used in folder name
 # Example:
-#      python calc_valid.py -s fpar8 x:\MCD15A2\ -of1 x:\MCD15A2\combined\fpar8\ y:\dhi\global\fpar_8\combined-v2\ fpar
+#      python calc_valid.py -if x:\MCD15A2\ -of x:\MCD15A2\valid\ fpar
 #
-# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+# Copyright (C) 2015-2017 Maxim Dubinin (sim@gis-lab.info)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -87,31 +87,31 @@ if __name__ == '__main__':
     # grass.run_command('g.list', type = 'rast')
     
     years = range(2003,2014+1)
-    numslices = len(glob.glob(str(years[0]) + '/tif-' + args.product + '-qa/' + '*.tif'))
+    numslices = len(glob.glob(str(years[0]) + '/tif-' + args.product + '-qa-mask/' + '*.tif'))
     print 'Number of slices: %s ' % numslices
 
-    # workers = multi.cpu_count()
-    # if workers is 1 and "WORKERS" in os.environ:
-        # workers = int(os.environ["WORKERS"])
-    # if workers < 1:
-        # workers = 1
+    workers = multi.cpu_count()
+    if workers is 1 and "WORKERS" in os.environ:
+        workers = int(os.environ["WORKERS"])
+    if workers < 1:
+        workers = 1
     
-    # workers = 30
+    workers = 30
     
-    # for year in years:
-        # proc = {}
-        # i = 0
-        # for f in glob.glob(str(year) + '/tif-' + args.product + '-qa/' + '*.tif'):
-            # i+=1
-            # proc[i] = grass.start_command('r.in.gdal', input_ = f, output=str(year) + '_' + str(i), overwrite = True, memory = '50')
+    for year in years:
+        proc = {}
+        i = 0
+        for f in glob.glob(str(year) + '/tif-' + args.product + '-qa-mask/' + '*.tif'):
+            i+=1
+            proc[i] = grass.start_command('r.in.gdal', input = f, output=str(year) + '_' + str(i), overwrite = True, memory = '50')
     
-            # if i % workers is 0:
-                # for j in range(workers):
-                    # proc[i - j].wait()
+            if i % workers is 0:
+                for j in range(workers):
+                    proc[i - j].wait()
     
     
-    # workers = multi.cpu_count()
-    # proc = {}
+    workers = multi.cpu_count()
+    proc = {}
     
     outf = file('tmp_reclass.txt', 'w')
     s = """
