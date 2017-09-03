@@ -14,13 +14,13 @@
 #           -h                 show this help message and exit
 #           -rs                path(s) to raster, separate by comma if several
 #           -fs                path(s) to folders with raster, separate by comma if several
+#           -cnt               text file where counts for unique values will be stored
 #           output_unique      text file where unique values will be stored
-#           output_counts      text file where counts for unique values will be stored
 # Examples:
-#      python get_unique.py -fs y:\dhi\global\fpar_4\,y:\dhi\global\fpar_4\combined\ out.txt cnt.txt
-#      python get_unique.py -rs y:\dhi\global\fpar_4\raster1.tif,y:\dhi\global\fpar_4\combined\raster2.tif out.txt cnt.txt
+#      python get_unique.py -fs y:\dhi\global\fpar_4\,y:\dhi\global\fpar_4\combined\ out.txt
+#      python get_unique.py -rs y:\dhi\global\fpar_4\raster1.tif,y:\dhi\global\fpar_4\combined\raster2.tif -cnt cnt.txt out.txt
 #
-# Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
+# Copyright (C) 2015-2017 Maxim Dubinin (maxim.dubinin@nextgis.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -49,7 +49,7 @@ import struct
 
 parser = argparse.ArgumentParser()
 parser.add_argument('output_unique', help='Output file with unique value')
-parser.add_argument('output_counts', help='Output file with counts')
+parser.add_argument('-cnt','--counts', help='Output file with counts')
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('-rs','--rasters', help='full raster path(s), separate by comma if several')
 group.add_argument('-fs','--folders', help='path(s) to folders with raster, separate by comma if several')
@@ -128,12 +128,13 @@ if __name__ == '__main__':
             f_out_unique.write(str(int(val)) + '\n')
 
         f_out_unique.close()
+        
+        if args.counts:
+            f_out_counts = open(args.counts,'wb')
+            for val in unique_values_all:
+                print "Calculating count for %d" % val
+                count_value = countValues(val)
+                f_out_counts.write(str(int(val)) + ',' + str(count_value) + '\n')
 
-        f_out_counts = open(args.output_counts,'wb')
-        for val in unique_values_all:
-            print "Calculating count for %d" % val
-            count_value = countValues(val)
-            f_out_counts.write(str(int(val)) + ',' + str(count_value) + '\n')
-
-        f_out_counts.close()
+            f_out_counts.close()
         
