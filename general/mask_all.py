@@ -3,7 +3,7 @@
 
 #******************************************************************************
 #
-# patch_raster.py
+# mask_all.py
 # ---------------------------------------------------------
 # Apply raster B to raster A to add 0 where raster A values are nodata or missing (but exist in raster B)
 # More: http://github.com/nextgis/dhi

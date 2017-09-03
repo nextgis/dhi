@@ -70,10 +70,9 @@ if __name__ == '__main__':
 
     os.chdir(id)
 
-    # tifs = glob.glob('*.tif')
+    tifs = glob.glob('*.tif')
     # tifs = glob.glob('2013.12.[1|2][1|7|9].tif')
-    # tifs = ['2011.01.09.tif', '2011.01.17.tif', '2011.01.25.tif']
-    tifs = ['2012.01.17.tif', '2012.01.25.tif']
+    # tifs = ['2013.12.03.tif', '2013.12.11.tif']
     
     for tif in tifs:
         if not os.path.exists(od + tif) or args.overwrite:
@@ -86,7 +85,8 @@ if __name__ == '__main__':
             # cmd1 = 'gdalwarp -srcnodata "32766" -dstnodata "32767" ' + tif + ' ' + temp1 + ' --config GDAL_CACHEMAX 500 -wm 500' + ' -overwrite'
             cmd1 = 'gdalwarp -srcnodata "32766" -dstnodata "32767" ' + tif + ' ' + temp1 + ' --config GDAL_CACHEMAX 500 -wm 500' + ' -overwrite'
             
-            cmd2 = 'gdal_calc ' + type + '-A ' + temp1 + ' --outfile=' + temp2 + ' --calc="32767* (logical_and(A>=32761,A<32764)) +0*(logical_or(A==32764,A==32765)) + A*(logical_and(A!=32764,A!=32765))" --NoDataValue=32767' + ' --overwrite'
+            # cmd2 = 'gdal_calc ' + type + '-A ' + temp1 + ' --outfile=' + temp2 + ' --calc="32767* (logical_and(A>=32761,A<32764)) +0*(logical_or(A==32764,A==32765)) + A*(logical_and(A!=32764,A!=32765))" --NoDataValue=32767' + ' --overwrite'
+            cmd2 = 'gdal_calc ' + type + '-A ' + temp1 + ' --outfile=' + temp2 + ' --calc="32767* (logical_and(A>=32761,A<32764)) +32767*(logical_or(A==32764,A==32765)) + A*(logical_and(A!=32764,A!=32765))" --NoDataValue=32767' + ' --overwrite'
             
             cmd3 = 'gdal_calc ' + type + '-A ' + temp2 + ' --outfile=' + temp3 + ' --calc="A*(A<30000) +  0*(A>30000)"  --NoDataValue=32767' + ' --overwrite'
             

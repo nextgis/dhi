@@ -83,23 +83,23 @@ if __name__ == '__main__':
         if args.nodata in val or not val or val == ['0']:
         # if args.nodata in val or not val:
             if not args.output_file:
-                # print val
+                print('%s' % tif) + '==>' + ('%s' % val)
                 # print(tif + ' need to be patched')
                 tiflist.append(tif)
             else:
                 with open(args.output_file, 'w') as outfile:
                     outfile.write(tif+',')
     
-    if len(tiflist) > 0:  
-        print ",".join(map(str,tiflist))
+    # if len(tiflist) > 0:  
+        # print ",".join(map(str,tiflist))
     
-    if args.output_file:
-        try:
-            with open(args.output_file, 'r+') as outfile:
-                line = outfile.read()[:-1]
-                outfile.seek(0)
-                outfile.write(line)
-                outfile.truncate()
-        except IOError as err:
-            print err.errno 
-            print err.strerror
+    # if args.output_file:
+        # try:
+            # with open(args.output_file, 'r+') as outfile:
+                # line = outfile.read()[:-1]
+                # outfile.seek(0)
+                # outfile.write(line)
+                # outfile.truncate()
+        # except IOError as err:
+            # print err.errno 
+            # print err.strerror

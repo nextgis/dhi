@@ -51,6 +51,8 @@ python prepare_data.py MODIS_Grid_16DAY_250m_500m_VI:"250m 16 days NDVI" x:\MOD1
 python prepare_data.py "MOD_Grid_MOD15A2:FparLai_QC" x:\MCD15A2\2003\hdf\ x:\MCD15A2\2003\tif-fpar\qa\ -ps 0.0083
 python prepare_data.py "MODIS_Grid_16DAY_250m_500m_VI:250m 16 days NDVI" x:\MOD13Q1\2003\hdf\ x:\MOD13Q1\2003\tif-ndvi-sin\ -ps 250
 
+python mask_all.py -if x:\MOD13A2\2012\tif-evi-qa\ -of x:\MOD13A2\2012\tif-evi-qa-mask\ -m y:\dhi\masks\Fpar_NoData_sin_b_resize.tif
+
 for /L %i in (2002,1,2015) DO python prepare_data.py -o MOD_Grid_MOD15A2:Fpar_1km x:\MCD15A2\%i\hdf\ x:\dhi2\MCD15A2\%i\tif-fpar\ -e SIN
 for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:Lai_1km x:\MCD15A2\%i\hdf\ x:\dhi2\MCD15A2\%i\tif-lai\ -e SIN
 for /L %i in (2003,1,2014) DO python prepare_data.py MOD_Grid_MOD15A2:FparLai_QC x:\MCD15A3\%i\hdf\ x:\MCD15A2\%i\qa\ -ps 0.0083

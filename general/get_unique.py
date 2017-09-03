@@ -17,8 +17,8 @@
 #           output_unique      text file where unique values will be stored
 #           output_counts      text file where counts for unique values will be stored
 # Examples:
-#      python get_unique.py -fs y:\dhi\global\fpar_4\,y:\dhi\global\fpar_4\combined\ out.txt
-#      python get_unique.py -rs y:\dhi\global\fpar_4\raster1.tif,y:\dhi\global\fpar_4\combined\raster2.tif out.txt
+#      python get_unique.py -fs y:\dhi\global\fpar_4\,y:\dhi\global\fpar_4\combined\ out.txt cnt.txt
+#      python get_unique.py -rs y:\dhi\global\fpar_4\raster1.tif,y:\dhi\global\fpar_4\combined\raster2.tif out.txt cnt.txt
 #
 # Copyright (C) 2015 Maxim Dubinin (sim@gis-lab.info)
 #

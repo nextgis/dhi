@@ -65,12 +65,10 @@ if __name__ == '__main__':
     id,od2 = sanitize()
     
     #prepare environment
-    # gisbase = os.environ['GISBASE'] = "c:/tools/NextGIS_QGIS/apps/grass/grass-6.4.4/"
     gisbase = os.environ['GISBASE'] = "c:/OSGeo4W/apps/grass/grass-7.0.3/"
-    gisdbase = os.environ['GISDBASE'] = "e:/users/maxim/thematic/dhi/"
-    # gisdbase = os.environ['GISDBASE'] = "x:/"
+    # gisdbase = os.environ['GISDBASE'] = "e:/users/maxim/thematic/dhi/"
+    gisdbase = os.environ['GISDBASE'] = "x:/"
     location = "dhi_grass"
-    # mapset   = "gpp"
     mapset   = args.product
     if args.product == 'fpar':
         mapset = 'fpar8'
@@ -86,62 +84,43 @@ if __name__ == '__main__':
     prefix = 'dhi'
     os.chdir(id)
 
-    
-    
-    # # grass.run_command('g.remove', type = 'rast', pat = '*', flags = 'f')
-    # # grass.run_command('g.remove', type = 'rast', name = '11_med')
-    # grass.run_command('g.list', type = 'rast', pat="20[0-9][0-9]_*")
-    
-    # years = range(2003,2014+1)
+    years = range(2003,2014+1)
     # numslices = len(glob.glob(str(years[0]) + '/tif-' + args.product + '-qa/' + '*.tif'))
-    # # numslices = len(glob.glob(str(years[0]) + '/tif-' + args.product + '-qa-mask/' + '*.tif'))
-    # print(numslices)
-
+    numslices = len(glob.glob(str(years[0]) + '/tif-' + args.product + '-qa-mask/' + '*.tif'))
+    print(numslices)
     
-    workers = multi.cpu_count()
-    # workers = 1
-    if workers is 1 and "WORKERS" in os.environ:
-        workers = int(os.environ["WORKERS"])
-    if workers < 1:
-        workers = 1
+    # workers = multi.cpu_count()
+    # if workers is 1 and "WORKERS" in os.environ:
+        # workers = int(os.environ["WORKERS"])
+    # if workers < 1:
+        # workers = 1
             
-    proc = {}
+    # proc = {}
     
-    # # global nuldev
-    # # nuldev = file(os.devnull, 'w')
+    # global nuldev
+    # nuldev = file(os.devnull, 'w')
    
     
     # for year in years:
         # i = 0
-        # # for f in glob.glob(str(year) + '/tif-' + args.product + '-qa-mask/' + '*.tif'):
-        # for f in glob.glob(str(year) + '/tif-' + args.product + '-qa/' + '*.tif'):
+        # for f in glob.glob(str(year) + '/tif-' + args.product + '-qa-mask/' + '*.tif'):
+        # # for f in glob.glob(str(year) + '/tif-' + args.product + '-qa/' + '*.tif'):
             # i += 1
-            # proc[i] = grass.start_command('r.in.gdal', input_ = f, output=str(year) + '_' + str(i), overwrite = True)
-            # # grass.run_command('r.in.gdal', input_ = f, output=str(year) + '_' + str(i))
-            
-            # # try:
-                # # grass.run_command('r.info', map_ = str(year) + '_' + str(i), quiet = True, stdout = nuldev)
-            # # except:
-                # # print (str(year) + '_' + str(i)) + ' is not found' 
-                # # grass.run_command('r.in.gdal', input_ = f, output=str(year) + '_' + str(i), overwrite = True)
-            
-            # if i % workers is 0:
-                # for j in range(workers):
-                    # proc[i - j].wait()
+            # try:
+                # grass.run_command('r.info', map_ = str(year) + '_' + str(i), quiet = True, stdout = nuldev)
+            # except:
+                # print (str(year) + '_' + str(i)) + ' is not found' 
+                # proc[i] = grass.start_command('r.in.gdal', input_ = f, output=str(year) + '_' + str(i), overwrite = True)
+
+                # if i % workers is 0:
+                    # for j in range(workers):
+                        # proc[i - j].wait()
     
+    # rastlist = grass.read_command('g.list', type = 'rast', pat="20[0-9][0-9]_*", sep=',').rstrip()
     
-    # grass.run_command('r.in.gdal', input_ = 'x:/MCD15A2/2007/tif-fpar-qa/2007.06.18.tif', output='2007_22', overwrite = True)
-    
-    
-    
-    
-    rastlist = grass.read_command('g.list', type = 'rast', pat="20[0-9][0-9]_*", sep=',').rstrip()
-    # print rastlist
-    
-    grass.run_command('r.series', input_=rastlist, output='SERIES_SUM', method='sum', overwrite = True)
+    # grass.run_command('r.series', input_=rastlist, output='SERIES_SUM', method='sum', overwrite = True)
         
-    grass.run_command('r.info', map_ = 'SERIES_SUM')
-    
+    # grass.run_command('r.info', map_ = 'SERIES_SUM')
     
     # #Calculate counts and medians for N time slices
     # for i in range(1,numslices+1):
@@ -175,39 +154,40 @@ if __name__ == '__main__':
                 # for j in range(workers):
                     # proc[i - j].wait()
     
-            
             # cmd = "gdal_edit -a_srs \"+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs\" " + od1 + str(i) + '_med.tif'
             # os.system(cmd)
         
-    # if not args.suffix: args.suffix = ''
-    # fn_out = prefix + '_' + args.suffix + '_f.tif'
+    if not args.suffix: args.suffix = ''
+    fn_out = prefix + '_' + args.suffix + '_f.tif'
 
-    # t = '_f'
-    # list = ''
+    t = '_f'
+    list = ''
     
-    # years = range(2003,2014+1)
-    # numslices = len(glob.glob(str(years[0]) + '/tif-' + args.product + '-qa/' + '*.tif'))
-    # # print(numslices)
-    
-    # for i in range(1,numslices+1):
-        # list = list + ',' + str(i) + t
+    years = range(2003,2014+1)
+    numslices = len(glob.glob(str(years[0]) + '/tif-' + args.product + '-qa/' + '*.tif'))
+
+    for i in range(1,numslices+1):
+        list = list + ',' + str(i) + t
         
-    # list = list.strip(',')
+    list = list.strip(',')
 
     # grass.run_command('r.series', input_=list, output='dh1' + t + ',dh2' + t + ',ave' + t + ',std' + t, method='sum,minimum,average,stddev')
     # grass.mapcalc(('dh3' + t + ' = std' + t + '/ave' + t), overwrite = True)
     
-    # # Need for 0 / null stuff
-    # grass.mapcalc("$dh3_new = if(isnull($dh3)&&($dh2==0),$dh2,$dh3)", dh3_new = 'dh3' + t + '2', dh3 = 'dh3' + t, dh2 = 'dh2' + t)
-    # grass.run_command('g.rename', raster =('dh3' + t + '2', 'dh3' + t ), overwrite = True)
+    # # # Need for 0 / null stuff
+    # # grass.mapcalc("$dh3_new = if(isnull($dh3)&&($dh2==0),$dh2,$dh3)", dh3_new = 'dh3' + t + '2', dh3 = 'dh3' + t, dh2 = 'dh2' + t)
+    # # grass.run_command('g.rename', raster =('dh3' + t + '2', 'dh3' + t ), overwrite = True)
     
-    # grass.run_command('g.remove', type_ = 'group', name = 'rgb_group' + t, flags = 'f')
-    # grass.run_command('i.group', group='rgb_group' + t, input_='dh1' + t + ',dh2' + t + ',dh3' + t)
-    # grass.run_command('r.out.gdal', input_='rgb_group' + t, output=fn_out, type='Float32', flags = 'f', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES',  overwrite = True)
-    # shutil.move(fn_out,od2 + fn_out)
-    # shutil.move(fn_out + '.aux.xml',od2 + fn_out + '.aux.xml')
-    # shutil.move(fn_out.replace('.tif','.tfw'),od2 + fn_out.replace('.tif','.tfw'))
+    # rastlist = grass.read_command('g.list', type = 'rast', pat="dh*", sep=',').rstrip()
+    # print rastlist
+    
+    grass.run_command('g.remove', type_ = 'group', name = 'rgb_group' + t, flags = 'f')
+    grass.run_command('i.group', group='rgb_group' + t, input_='dh1' + t + ',dh2' + t + ',dh3' + t)
+    grass.run_command('r.out.gdal', input_='rgb_group' + t, output=fn_out, type='Float32', flags = 'f', createopt='PROFILE=BASELINE,INTERLEAVE=PIXEL,TFW=YES',  overwrite = True)
+    shutil.move(fn_out,od2 + fn_out)
+    shutil.move(fn_out + '.aux.xml',od2 + fn_out + '.aux.xml')
+    shutil.move(fn_out.replace('.tif','.tfw'),od2 + fn_out.replace('.tif','.tfw'))
 
-    # cmd = "gdal_edit -a_srs \"+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs\" " + od2 + fn_out
-    # os.system(cmd)
+    cmd = "gdal_edit -a_srs \"+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs\" " + od2 + fn_out
+    os.system(cmd)
 
