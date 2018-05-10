@@ -82,8 +82,8 @@ def main(options, flags):
 
     i = j = 0
     try:
-        while west < reg['e']:
-            while south < reg['n']:
+        while west < reg['e'] - reg['ewres']:  # Don't create mapset less then one-pixel size => subtract reg['ewres']
+            while south < reg['n'] - reg['nsres']:
                 mapset_name = "node_%s_%s" % (j, i)
                 grass.run_command('g.mapset', mapset=mapset_name, flags='c', quiet=True)
                 grass.run_command('g.region', s=south, n=min(reg['n'], south+dy),
