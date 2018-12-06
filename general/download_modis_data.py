@@ -52,11 +52,15 @@ parser.add_argument('output_folder', help='Output folder with HDFs')
 parser.add_argument('-c','--create_hdf_folder', help='If "yes", hdf subfolder will be created for each date, else hdf folder will be created for the whole session')
 args = parser.parse_args()
 
+import getpass
+u = raw_input("Username: ")
+p = getpass.getpass(prompt='Password: ')
+
 #Download data
 def download(date):
     print("Downloading started: " + date)
     
-    cmd = 'wget ' + args.url + '/' + date + '/ --quiet --recursive --level=1 --accept=hdf --no-directories'
+    cmd = 'wget --user ' + u + ' --password ' + p + ' ' + args.url + '/' + date + '/ --quiet --recursive --level=1 --accept=hdf --no-directories'
     print cmd
     os.system(cmd)
     
