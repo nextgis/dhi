@@ -72,7 +72,7 @@ def sanitize():
     return args.output_folder
 
 if __name__ == '__main__':
-    od = sanitize()
+    #od = sanitize()
     
     numslices = args.numslices
     
